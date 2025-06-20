@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: flask-api
+    env: python
+    buildCommand: ""
+    startCommand: "python main_server.py"
+    envVars:
+      - key: DATABASE_URL
+        value: postgresql://username:password@host:5432/dbname  # заменишь своей ссылкой от Neon
