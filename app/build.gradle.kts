@@ -40,8 +40,12 @@ android {
 }
 
 dependencies {
+    implementation("androidx.navigation:navigation-compose:2.8.4")
+    implementation ("io.ktor:ktor-client-core:1.0.1")
+    implementation ("io.ktor:ktor-client-android:1.0.1")
+    implementation("com.squareup.okhttp3:okhttp:4.9.0")
+    implementation(libs.androidx.room.runtime.android)
     val nav_version = "2.9.0"
-
     implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

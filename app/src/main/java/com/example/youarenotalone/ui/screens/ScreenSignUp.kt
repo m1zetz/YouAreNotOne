@@ -44,7 +44,8 @@ import com.example.youarenotalone.ui.theme.orange
 @Composable
 fun ScreenSignUp(
     signUpViewModel: SignUpViewModel,
-    toSignIn: () -> Unit
+    toSignIn: () -> Unit,
+    register: () -> Unit
 ) {
 
     Column(
@@ -104,7 +105,7 @@ fun ScreenSignUp(
 
         Text(
             "Sign Up",
-            Modifier.clickable {},
+            Modifier.clickable { register() },
             color = orange
         )
 

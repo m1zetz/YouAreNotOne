@@ -60,7 +60,8 @@ import kotlin.math.tan
 @Composable
 fun ScreenSignIn(
     signInViewModel: SignInViewModel,
-    toSignUp: () -> Unit
+    toSignUp: () -> Unit,
+    login: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -130,7 +131,7 @@ fun ScreenSignIn(
 
         Text(
             "Sign In",
-            Modifier.clickable {visible = true},
+            Modifier.clickable {login()},
             color = orange
         )
 

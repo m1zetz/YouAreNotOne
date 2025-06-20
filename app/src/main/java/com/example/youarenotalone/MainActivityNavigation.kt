@@ -17,6 +17,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.youarenotalone.ui.screens.ScreenSignIn
 import com.example.youarenotalone.ui.screens.ScreenSignUp
+import com.example.youarenotalone.ui.screens.bottomNav.screens.MainScreen
 import com.example.youarenotalone.ui.screens.vms.SignInViewModel
 import com.example.youarenotalone.ui.screens.vms.SignUpViewModel
 
@@ -38,7 +39,7 @@ class MainActivity : ComponentActivity() {
                     startDestination = signInScreen,
                     Modifier.background(black),
 
-                ) {
+                    ) {
                     composable(
                         signInScreen,
                         exitTransition = {
@@ -46,7 +47,7 @@ class MainActivity : ComponentActivity() {
                                 AnimatedContentTransitionScope.SlideDirection.Left,
                                 tween(1000),
 
-                            )
+                                )
 
                         },
                         popEnterTransition = {
@@ -55,11 +56,13 @@ class MainActivity : ComponentActivity() {
                                 tween(1000)
                             )
                         }
-                        ) {
+                    ) {
                         val signInViewModel: SignInViewModel = viewModel()
                         ScreenSignIn(
                             signInViewModel = signInViewModel,
-                            toSignUp = { navController.navigate(signUpScreen) })
+                            toSignUp = { navController.navigate(signUpScreen) },
+                            login = { signInViewModel.login()
+                                navController.navigate(mainScreen)})
                     }
                     composable(
                         signUpScreen,
@@ -68,7 +71,7 @@ class MainActivity : ComponentActivity() {
                                 AnimatedContentTransitionScope.SlideDirection.Left,
                                 tween(1000),
 
-                            )
+                                )
                         },
                         exitTransition = {
                             slideOutOfContainer(
@@ -77,13 +80,22 @@ class MainActivity : ComponentActivity() {
                             )
 
                         }
-                        ) {
+                    ) {
                         val signUpViewModel: SignUpViewModel = viewModel()
                         ScreenSignUp(
                             signUpViewModel = signUpViewModel,
-                            toSignIn = { navController.popBackStack() }
+                            toSignIn = { navController.popBackStack() },
+                            register = {
+                                signUpViewModel.register(
+
+                                )
+                            }
                         )
                     }
+                    composable(mainScreen) {
+                        MainScreen()
+                    }
+
 
                 }
             }
