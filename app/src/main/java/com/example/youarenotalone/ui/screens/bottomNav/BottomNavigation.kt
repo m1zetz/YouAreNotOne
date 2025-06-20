@@ -92,7 +92,6 @@ fun BottomNavigationCompose() {
                 stories -> Stories(paddingValues)
                 my_stories -> MyStories(paddingValues)
                 settings -> Settings(paddingValues)
-
             }
         }
 

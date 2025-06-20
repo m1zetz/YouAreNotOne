@@ -1,4 +1,5 @@
 package com.example.youarenotalone.ui.screens.bottomNav.screens
+
 import com.example.youarenotalone.ui.drawTopBorder
 import com.example.youarenotalone.ui.drawBottomBorder
 
@@ -11,6 +12,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -21,6 +25,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.youarenotalone.ui.screens.vms.StoriesViewModel
 import com.example.youarenotalone.ui.theme.bgColor
 import com.example.youarenotalone.ui.theme.black
 import com.example.youarenotalone.ui.theme.hunninFontFamily
@@ -29,7 +35,11 @@ import com.example.youarenotalone.ui.theme.orange
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Stories(paddingValues: PaddingValues){
+fun Stories(paddingValues: PaddingValues) {
+    val storiesViewModel: StoriesViewModel = viewModel()
+
+    storiesViewModel.getStories()
+
     Scaffold(
         containerColor = bgColor,
         topBar = {
@@ -59,15 +69,27 @@ fun Stories(paddingValues: PaddingValues){
 
         },
         content = { innerPadding ->
-            Column(
+            LazyColumn(
                 modifier = Modifier
-                    .padding(paddingValues)     // padding от внешнего Scaffold (из аргумента)
-                    .padding(innerPadding)      // padding от topBar
+                    .padding(paddingValues)
+                    .padding(innerPadding)
                     .fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
+                verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("Контент здесь", color = orange)
+                items(storiesViewModel.listOfStories) { card ->
+
+                    Card(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp)) {
+
+                        Text(card.text)
+
+                    }
+
+
+                }
+
             }
 
         }
