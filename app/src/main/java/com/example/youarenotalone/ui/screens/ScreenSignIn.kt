@@ -61,7 +61,7 @@ import kotlin.math.tan
 fun ScreenSignIn(
     signInViewModel: SignInViewModel,
     toSignUp: () -> Unit,
-    login: () -> Unit
+    login: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -132,7 +132,8 @@ fun ScreenSignIn(
         Text(
             "Sign In",
             Modifier.clickable {login()},
-            color = orange
+            color = orange,
+            fontFamily = hunninFontFamily
         )
 
         Spacer(modifier = Modifier.size(20.dp))
@@ -140,7 +141,9 @@ fun ScreenSignIn(
         Text(
             "Sign Up",
             Modifier.clickable { toSignUp() },
-            color = orange
+            color = orange,
+            fontFamily = hunninFontFamily
         )
     }
 }
+

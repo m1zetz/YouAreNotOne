@@ -106,7 +106,8 @@ fun ScreenSignUp(
         Text(
             "Sign Up",
             Modifier.clickable { register() },
-            color = orange
+            color = orange,
+            fontFamily = hunninFontFamily
         )
 
         Spacer(modifier = Modifier.size(20.dp))
@@ -114,7 +115,8 @@ fun ScreenSignUp(
         Text(
             "Sign In",
             Modifier.clickable { toSignIn() },
-            color = orange
+            color = orange,
+            fontFamily = hunninFontFamily
         )
     }
 

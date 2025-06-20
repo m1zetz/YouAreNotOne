@@ -16,3 +16,4 @@ val listOfColorsSlogan = listOf<Color>(orange, white)
 val gray = Color(0xFF7A7A7A)
 
 val pain = Color(0xFFFF7171)
+val bgColor = Color(0xFF151515)
