@@ -22,6 +22,17 @@ def get_posts():
 
             posts = [row[0] for row in rows]
             return jsonify({"posts": posts})
+        
+@app.route("/add_post", methods=["POST"])
+def get_posts():
+     data = request.json
+     user_id = data["user_id"]
+     text = data["text"]
+
+     with get_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("INSERT INTO posts (user_id, post_text) VALUES (%s, %s)", (user_id, text))
+            conn.commit()
 
 
 @app.route("/register", methods=["POST"])
