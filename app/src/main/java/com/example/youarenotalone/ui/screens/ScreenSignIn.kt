@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.sp
 import com.example.youarenotalone.R
 import com.example.youarenotalone.ui.screens.vms.SignInViewModel
 import com.example.youarenotalone.ui.theme.black
+import com.example.youarenotalone.ui.theme.comicRelief
 import com.example.youarenotalone.ui.theme.gray
 import com.example.youarenotalone.ui.theme.hunninFontFamily
 import com.example.youarenotalone.ui.theme.listOfColorsSlogan
@@ -89,7 +90,7 @@ fun ScreenSignIn(
                 )
             ),
             fontSize = 40.sp,
-            fontFamily = hunninFontFamily,
+            fontFamily = comicRelief,
 
             )
 
@@ -133,7 +134,7 @@ fun ScreenSignIn(
             "Sign In",
             Modifier.clickable {login()},
             color = orange,
-            fontFamily = hunninFontFamily
+            fontFamily = comicRelief
         )
 
         Spacer(modifier = Modifier.size(20.dp))
@@ -142,7 +143,7 @@ fun ScreenSignIn(
             "Sign Up",
             Modifier.clickable { toSignUp() },
             color = orange,
-            fontFamily = hunninFontFamily
+            fontFamily = comicRelief
         )
     }
 }

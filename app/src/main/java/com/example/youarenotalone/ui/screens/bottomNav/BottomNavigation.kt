@@ -128,7 +128,7 @@ fun BottomNavigationBar(
                     colors = NavigationBarItemDefaults.colors(
                         selectedIconColor = pain,
                         unselectedIconColor = gray,
-
+                        indicatorColor = black
                         ),
                 )
             }

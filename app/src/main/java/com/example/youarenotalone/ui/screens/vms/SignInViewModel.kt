@@ -23,11 +23,12 @@ import org.json.JSONObject
 import androidx.compose.runtime.mutableStateOf
 import androidx.room.util.copy
 
+var myUserId = mutableStateOf<Int?>(null)
 
 class SignInViewModel : ViewModel() {
     var messageLogin = mutableStateOf("")
     var messagePassword = mutableStateOf("")
-    var serverResponse = mutableStateOf("")
+
     fun login() {
         val client = OkHttpClient()
         val json = JSONObject()
@@ -44,23 +45,19 @@ class SignInViewModel : ViewModel() {
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 Log.d("FLASK", "Ошибка: ${e.message}")
-                serverResponse.value = "Ошибка подключения"
             }
 
             override fun onResponse(call: Call, response: Response) {
                 val body = response.body?.string()
-                try {
-                    val jsonResponse = JSONObject(body ?: "{}")
-                    val status = jsonResponse.getString("status")
-                    serverResponse.value = when (status) {
-                        "success" -> "Вход выполнен"
-                        "error" -> jsonResponse.getString("message")
-                        else -> "Неизвестный ответ"
-                    }
+                val myId = try {
+                    JSONObject(body ?: "{}").optString("myId", "нет id")
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    serverResponse.value = "Ошибка при обработке ответа"
+                    "ошибка"
                 }
+
+                Log.d("FLASK", "myId: $myId")
+                myUserId.value = myId.toInt()
             }
         })
         messageLogin.value = ""

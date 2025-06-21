@@ -38,3 +38,7 @@ val Typography = Typography(
 val hunninFontFamily = FontFamily(
     Font(R.font.huninn_regular)
 )
+
+val comicRelief = FontFamily(
+    Font(R.font.comic_relief_regular)
+)

@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.youarenotalone.ui.theme.bgColor
 import com.example.youarenotalone.ui.theme.black
+import com.example.youarenotalone.ui.theme.comicRelief
 import com.example.youarenotalone.ui.theme.hunninFontFamily
 import com.example.youarenotalone.ui.theme.orange
 
@@ -43,7 +44,7 @@ fun Settings(paddingValues: PaddingValues){
                             modifier = Modifier.fillMaxWidth(),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text("Settings", fontFamily = hunninFontFamily)
+                            Text("Settings", fontFamily = comicRelief)
                         }
                     }
                 )
