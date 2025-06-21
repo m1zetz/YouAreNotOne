@@ -25,15 +25,27 @@ def get_posts():
         
 @app.route("/add_post", methods=["POST"])
 def add_post():
-     data = request.json
-     user_id = data["user_id"]
-     text = data["text"]
+    try:
+        data = request.json
+        print("Получены данные:", data)
 
-     with get_connection() as conn:
-        with conn.cursor() as cur:
-            cur.execute("INSERT INTO posts (user_id, post_text) VALUES (%s, %s)", (user_id, text))
-            conn.commit()
-            return {"status": "ok"}, 200
+        user_id = data["user_id"]
+        text = data["text"]
+
+        with get_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "INSERT INTO posts (user_id, post_text) VALUES (%s, %s)",
+                    (user_id, text)
+                )
+                conn.commit()
+
+        return jsonify({"status": "ok"}), 200
+
+    except Exception as e:
+        print("Ошибка при обработке /add_post:")
+        traceback.print_exc()
+        return jsonify({"error": "internal server error"}), 500
 
 
 @app.route("/register", methods=["POST"])
