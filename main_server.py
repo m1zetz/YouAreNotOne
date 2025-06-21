@@ -33,6 +33,7 @@ def add_post():
         with conn.cursor() as cur:
             cur.execute("INSERT INTO posts (user_id, post_text) VALUES (%s, %s)", (user_id, text))
             conn.commit()
+            return {"status": "ok"}, 200
 
 
 @app.route("/register", methods=["POST"])
