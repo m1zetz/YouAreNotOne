@@ -24,7 +24,7 @@ def get_posts():
             return jsonify({"posts": posts})
         
 @app.route("/add_post", methods=["POST"])
-def get_posts():
+def add_post():
      data = request.json
      user_id = data["user_id"]
      text = data["text"]
