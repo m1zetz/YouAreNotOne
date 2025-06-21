@@ -79,7 +79,7 @@ def login():
 
             password_hash = result[0]
             if bcrypt.verify(password, password_hash):
-                return jsonify({"status": "success"})
+                return jsonify({"myId": cur.execute("SELECT id FROM users WHERE password = %s", (password_hash) )})
             else:
                 return jsonify({"status": "error", "message": "Wrong password"}), 401
 
