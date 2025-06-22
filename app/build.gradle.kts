@@ -48,6 +48,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
     implementation(libs.androidx.room.runtime.android)
     implementation(libs.androidx.core.telecom)
+    implementation(libs.ads.mobile.sdk)
     val nav_version = "2.9.0"
     implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation(libs.androidx.core.ktx)

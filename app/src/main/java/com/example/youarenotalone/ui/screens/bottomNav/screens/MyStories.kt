@@ -1,9 +1,16 @@
 package com.example.youarenotalone.ui.screens.bottomNav.screens
 
+import ads_mobile_sdk.h6
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.TweenSpec
+import androidx.compose.animation.core.animateFloatAsState
 import com.example.youarenotalone.ui.drawTopBorder
 import com.example.youarenotalone.ui.drawBottomBorder
+import androidx.compose.material.Typography
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Arrangement.Bottom
 import androidx.compose.foundation.layout.Box
@@ -22,16 +29,25 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Shapes
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardDefaults.shape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -43,14 +59,23 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -69,10 +94,12 @@ import com.example.youarenotalone.ui.theme.pain
 import com.example.youarenotalone.ui.theme.white
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun MyStories(paddingValues: PaddingValues) {
     val myStoriesViewModel: MyStoriesViewModel = viewModel()
+
+
     Scaffold(
         containerColor = bgColor,
         topBar = {
@@ -110,57 +137,12 @@ fun MyStories(paddingValues: PaddingValues) {
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                items(myStoriesViewModel.listOfMyStories) { card ->
+                items(if (myStoriesViewModel.listOfMyStories.isEmpty()) listOf(1) else myStoriesViewModel.listOfMyStories) { card ->
 
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(14.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = grayDark
-                        )
-                    ) {
-
-                        Column(Modifier.fillMaxWidth()) {
-                            Text(
-                                card.text.replaceFirstChar { it.uppercase() },
-                                Modifier.padding(14.dp),
-                                fontFamily = comicRelief,
-                                color = white
-                            )
-
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Start
-                            ) {
-                                Icon(
-                                    painterResource(
-                                        R.drawable.like_border
-                                    ),
-                                    contentDescription = "",
-                                    tint = orange,
-                                    modifier = Modifier.padding(14.dp)
-                                )
-                                Button(
-                                    onClick = {},
-                                    shape = RoundedCornerShape(14.dp),
-                                    colors = ButtonColors(
-                                        containerColor = gray,
-                                        contentColor = grayDark,
-                                        disabledContentColor = grayDark,
-                                        disabledContainerColor = gray,
-                                    ),
-                                    modifier = Modifier.padding(10.dp)
-                                ) {
-                                    Text("helps for me")
-                                }
-                            }
-                        }
-
-
-                    }
-
+                    ExpandableCard(
+                        title = myStoriesViewModel.titleStory.value,
+                        text = myStoriesViewModel.textStory.value,
+                    )
 
                 }
 
@@ -169,7 +151,6 @@ fun MyStories(paddingValues: PaddingValues) {
         },
         floatingActionButton = {
             FloatingActionButton(
-//                onClick = {myStoriesViewModel.addPost(myUserId.value ?: -1, "toyotaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" )},
                 onClick = { myStoriesViewModel.stateOfBottomSheet.value = true },
                 shape = CircleShape,
                 modifier = Modifier.size(70.dp),
@@ -200,8 +181,52 @@ fun AddBottomSheet(vmMyStories: MyStoriesViewModel) {
             sheetState = sheetState,
             onDismissRequest = { vmMyStories.stateOfBottomSheet.value = false },
             content = {
-                Column(modifier = Modifier.fillMaxSize().verticalScroll(scrollState),
-                    horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(scrollState),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+
+                    Text(
+                        "Describe your story",
+                        color = orange,
+                        fontSize = 40.sp,
+                        fontFamily = comicRelief
+                    )
+
+                    Spacer(modifier = Modifier.size(15.dp))
+
+                    OutlinedTextField(
+                        value = vmMyStories.titleStory.value,
+                        onValueChange = {
+                            if (it.length <= 40) {
+                                vmMyStories.titleStory.value = it
+                            }
+                        },
+                        placeholder = {
+                            Text(
+                                "Title (length is 40 characters) ",
+                                color = gray,
+                                fontSize = 20.sp,
+                                fontFamily = comicRelief
+                            )
+                        },
+                        textStyle = TextStyle(
+                            color = gray,
+                            fontSize = 20.sp,
+                            fontFamily = comicRelief
+                        ),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = orange,
+                            unfocusedBorderColor = gray
+                        ),
+                        shape = RoundedCornerShape(15.dp),
+                        modifier = Modifier
+                            .padding(start = 10.dp, end = 10.dp)
+                            .fillMaxWidth()
+
+                    )
 
                     Spacer(modifier = Modifier.size(15.dp))
 
@@ -212,7 +237,14 @@ fun AddBottomSheet(vmMyStories: MyStoriesViewModel) {
                                 vmMyStories.textStory.value = it
                             }
                         },
-                        placeholder = { Text("Maximum length is 1000 characters", color = gray, fontSize = 20.sp, fontFamily = comicRelief) },
+                        placeholder = {
+                            Text(
+                                "Story (length is 1000 characters)",
+                                color = gray,
+                                fontSize = 20.sp,
+                                fontFamily = comicRelief
+                            )
+                        },
                         textStyle = TextStyle(
                             color = gray,
                             fontSize = 20.sp,
@@ -237,12 +269,16 @@ fun AddBottomSheet(vmMyStories: MyStoriesViewModel) {
                         onClick = {
                             vmMyStories.addPost(
                                 user_id = myUserId.value ?: -1,
-                                vmMyStories.textStory.value)
+                                vmMyStories.titleStory.value,
+                                vmMyStories.textStory.value
+                            )
                         }) {
-                        Text("Send story",
+                        Text(
+                            "Send story",
                             color = gray,
                             fontSize = 20.sp,
-                            fontFamily = comicRelief)
+                            fontFamily = comicRelief
+                        )
                     }
 
                 }
@@ -252,6 +288,111 @@ fun AddBottomSheet(vmMyStories: MyStoriesViewModel) {
         )
     }
 
+
+}
+
+
+@ExperimentalMaterialApi
+@Composable
+fun ExpandableCard(
+    title: String,
+    text: String,
+) {
+
+    var expandedState by remember {
+        mutableStateOf(false)
+    }
+    val rotationState by animateFloatAsState(
+        targetValue = if (expandedState) 180f else 0f
+    )
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .animateContentSize(
+                animationSpec = TweenSpec(
+                    durationMillis = 300,
+                    easing = LinearOutSlowInEasing
+                )
+            )
+            .padding(10.dp),
+        shape = RoundedCornerShape(12.dp),
+        onClick = {
+            expandedState = !expandedState
+        },
+        colors = CardDefaults.cardColors(containerColor = grayDark)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    modifier = Modifier.weight(6f).padding(start = 10.dp, end = 10.dp),
+                    text = title.replaceFirstChar { it.uppercase() },
+                    fontSize = 25.sp,
+                    maxLines = 1,
+                    color = orange,
+                    fontFamily = comicRelief
+                )
+                IconButton(
+                    modifier = Modifier
+                        .alpha(ContentAlpha.medium)
+                        .weight(1f)
+                        .rotate(rotationState),
+                    onClick = {
+                        expandedState = !expandedState
+                    },
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowDropDown,
+                        contentDescription = "Drop Down Arrow",
+                        tint = orange
+                    )
+                }
+            }
+            if (expandedState) {
+                Text(
+                    text.replaceFirstChar { it.uppercase() },
+                    Modifier.padding(10.dp),
+                    fontFamily = comicRelief,
+                    color = white
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Icon(
+                        painterResource(
+                            R.drawable.like_border
+                        ),
+                        contentDescription = "",
+                        tint = orange,
+                        modifier = Modifier
+                            .padding(14.dp)
+                            .clickable {  }
+                    )
+                    Button(
+                        onClick = {},
+                        shape = RoundedCornerShape(14.dp),
+                        colors = ButtonColors(
+                            containerColor = gray,
+                            contentColor = grayDark,
+                            disabledContentColor = grayDark,
+                            disabledContainerColor = gray,
+                        ),
+                        modifier = Modifier.padding(10.dp)
+                    ) {
+                        Text("help a person")
+                    }
+                }
+            }
+        }
+    }
 
 }
 
