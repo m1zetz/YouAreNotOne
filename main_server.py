@@ -15,6 +15,7 @@ CORS(app)
 
 @app.route("/get_comments", methods=["GET"])
 def get_comments():
+     print("🔵 [FLASK] Получен GET-запрос на /get_comments")
      with get_connection() as conn:
         with conn.cursor() as cur:
             cur.execute("SELECT posts_id, comments FROM posts_comments")
