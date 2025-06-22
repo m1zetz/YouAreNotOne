@@ -24,6 +24,21 @@ def get_comments():
 
             return jsonify(posts)
 
+@app.route("/add_comment", methods=["POST"])
+def add_comment():
+     with get_connection() as conn:
+
+        data = request.json
+        post_id = data["postId"]
+        comment = data["comment"]
+
+        with conn.cursor() as cur:
+            cur.execute("INSERT INTO posts_comments (posts, comments ,post_text) VALUES (%s, %s, %s)",
+                    (post_id, comment))
+            conn.commit()
+ 
+            return jsonify({"status": "ok"}), 200
+
 @app.route("/get_all_posts", methods=["GET"])
 def get_posts():
      with get_connection() as conn:
@@ -39,7 +54,6 @@ def get_posts():
 def add_post():
     try:
         data = request.json
-        print("Получены данные:", data)
 
         user_id = data["user_id"]
         title = data["title"]
