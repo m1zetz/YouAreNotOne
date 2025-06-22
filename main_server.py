@@ -13,14 +13,25 @@ def get_connection():
 
 CORS(app)
 
+@app.route("/get_comments", methods=["GET"])
+def get_comments():
+     with get_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT posts_id, comments FROM posts_comments")
+            rows = cur.fetchall()
+
+            posts = [{"post_id": row[0], "comments": row[1]} for row in rows]
+
+            return jsonify(posts)
+
 @app.route("/get_all_posts", methods=["GET"])
 def get_posts():
      with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT title, post_text, user_id FROM posts")
+            cur.execute("SELECT id ,title, post_text, user_id FROM posts")
             rows = cur.fetchall()
 
-            posts = [{"title": row[0], "post_text": row[1], "user_id": row[2]} for row in rows]
+            posts = [{"id": row[0],"title": row[1], "post_text": row[2], "user_id": row[3]} for row in rows]
 
             return jsonify(posts)
         
