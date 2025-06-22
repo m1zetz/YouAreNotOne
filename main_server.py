@@ -17,11 +17,12 @@ CORS(app)
 def get_posts():
      with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT post_text FROM posts")
+            cur.execute("SELECT title, post_text FROM posts")
             rows = cur.fetchall()
 
-            posts = [row[0] for row in rows]
-            return jsonify({"posts": posts})
+            posts = [{"title": row[0], "post_text": row[1]} for row in rows]
+
+            return jsonify(posts)
         
 @app.route("/add_post", methods=["POST"])
 def add_post():
@@ -30,13 +31,14 @@ def add_post():
         print("Получены данные:", data)
 
         user_id = data["user_id"]
+        title = data["title"]
         text = data["text"]
 
         with get_connection() as conn:
             with conn.cursor() as cur:
                 cur.execute(
-                    "INSERT INTO posts (user_id, post_text) VALUES (%s, %s)",
-                    (user_id, text)
+                    "INSERT INTO posts (user_id, title ,post_text) VALUES (%s, %s, %s)",
+                    (user_id, title, text)
                 )
                 conn.commit()
 
