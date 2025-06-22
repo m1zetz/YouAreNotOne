@@ -97,8 +97,10 @@ import com.example.youarenotalone.ui.theme.white
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun MyStories(paddingValues: PaddingValues) {
+
     val myStoriesViewModel: MyStoriesViewModel = viewModel()
 
+    myStoriesViewModel.getMyStories()
 
     Scaffold(
         containerColor = bgColor,
@@ -137,11 +139,11 @@ fun MyStories(paddingValues: PaddingValues) {
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                items(if (myStoriesViewModel.listOfMyStories.isEmpty()) listOf(1) else myStoriesViewModel.listOfMyStories) { card ->
+                items(myStoriesViewModel.listOfMyStories) { card ->
 
                     ExpandableCard(
-                        title = myStoriesViewModel.titleStory.value,
-                        text = myStoriesViewModel.textStory.value,
+                        title = card.title,
+                        text = card.text,
                     )
 
                 }

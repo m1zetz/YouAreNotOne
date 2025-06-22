@@ -18,12 +18,16 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
+import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
 
 class MyStoriesViewModel : ViewModel() {
 
     val client = OkHttpClient()
+
+    var serverResponse = mutableStateOf("")
+
     var listOfMyStories = mutableStateListOf<Stories>()
 
     var stateOfBottomSheet = mutableStateOf(false)
@@ -31,6 +35,7 @@ class MyStoriesViewModel : ViewModel() {
     var titleStory = mutableStateOf("")
 
     var textStory = mutableStateOf("")
+
 
     fun addPost(user_id: Int, title: String, text: String){
 
@@ -59,6 +64,62 @@ class MyStoriesViewModel : ViewModel() {
         textStory.value = ""
 
 
+    }
+
+    fun getMyStories() {
+        val request = Request.Builder()
+            .url("https://youarenotone.onrender.com/get_all_posts")
+            .get()
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                Log.e("HTTP", "Ошибка: ${e.message}")
+                serverResponse.value = "Ошибка подключения"
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                val body = response.body?.string()
+                if (response.isSuccessful && body != null) {
+                    try {
+                        val jsonArray = JSONArray(body)
+
+                        listOfMyStories.clear()
+
+                        val currentUserId = myUserId.value
+
+                        for (i in 0 until jsonArray.length()) {
+                            val item = jsonArray.getJSONObject(i)
+                            val title = item.getString("title")
+                            val text = item.getString("post_text")
+                            val user_idServer = item.getInt("user_id")
+
+                            if (currentUserId != null){
+
+                                if(user_idServer == currentUserId){
+                                    listOfMyStories.add(
+                                        Stories(
+                                            user_id = user_idServer,
+                                            title = title,
+                                            text = text
+                                        )
+                                    )
+                                }
+
+                            }
+
+                        }
+
+                        serverResponse.value = "Успешно загружено"
+                    } catch (e: Exception) {
+                        Log.e("HTTP", "Ошибка парсинга: ${e.message}")
+                        serverResponse.value = "Ошибка при парсинге"
+                    }
+                } else {
+                    serverResponse.value = "Ошибка от сервера"
+                }
+            }
+        })
     }
 
 }
