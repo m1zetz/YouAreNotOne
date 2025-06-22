@@ -17,10 +17,10 @@ CORS(app)
 def get_posts():
      with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT title, post_text FROM posts")
+            cur.execute("SELECT title, post_text, user_id FROM posts")
             rows = cur.fetchall()
 
-            posts = [{"title": row[0], "post_text": row[1]} for row in rows]
+            posts = [{"title": row[0], "post_text": row[1], "user_id": row[2]} for row in rows]
 
             return jsonify(posts)
         
