@@ -18,7 +18,7 @@ def get_comments():
      print("🔵 [FLASK] Получен GET-запрос на /get_comments")
      with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT posts_id, comments FROM posts_comments")
+            cur.execute("SELECT posts, comments FROM posts_comments")
             rows = cur.fetchall()
 
             posts = [{"post_id": row[0], "comments": row[1]} for row in rows]
