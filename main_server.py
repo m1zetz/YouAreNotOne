@@ -33,7 +33,7 @@ def add_comment():
         comment = data["comment"]
 
         with conn.cursor() as cur:
-            cur.execute("INSERT INTO posts_comments (posts, comments ,post_text) VALUES (%s, %s, %s)",
+            cur.execute("INSERT INTO posts_comments (posts, comments) VALUES (%s, %s)",
                     (post_id, comment))
             conn.commit()
  
