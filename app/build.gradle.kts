@@ -40,7 +40,7 @@ android {
 }
 
 dependencies {
-    implementation("androidx.compose.material3:material3:1.4.0-alpha15")
+
     implementation("com.google.accompanist:accompanist-pager:0.28.0")
     implementation("com.google.accompanist:accompanist-pager-indicators:0.28.0")
     implementation("androidx.navigation:navigation-compose:2.8.4")

@@ -4,14 +4,18 @@ package com.example.youarenotalone.ui.screens.bottomNav.screens
 import ads_mobile_sdk.h6
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,7 +35,7 @@ import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.OutlinedButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material.Shapes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -166,6 +170,7 @@ fun Stories(navController: NavController, storiesViewModel: StoriesViewModel) {
     )
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Comments(storiesViewModel: StoriesViewModel) {
 
@@ -179,57 +184,13 @@ fun Comments(storiesViewModel: StoriesViewModel) {
             .fillMaxSize()
             .background(grayDarkDark)
     ) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
-            shape = RoundedCornerShape(12.dp),
-            colors = CardDefaults.cardColors(containerColor = grayDark)
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .weight(6f)
-                            .padding(start = 10.dp, end = 10.dp),
-                        text = storiesViewModel.currentPostTitle.value.replaceFirstChar { it.uppercase() },
-                        fontSize = 25.sp,
-                        maxLines = 1,
-                        color = orange,
-                        fontFamily = comicRelief
-                    )
-                }
-                Text(
-                    storiesViewModel.currentPostText.value.replaceFirstChar { it.uppercase() },
-                    Modifier.padding(10.dp),
-                    fontFamily = comicRelief,
-                    color = white
-                )
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start
-                ) {
-                    Icon(
-                        painterResource(
-                            R.drawable.like_border
-                        ),
-                        contentDescription = "",
-                        tint = orange,
-                        modifier = Modifier
-                            .padding(14.dp)
-                    )
-                }
-            }
-        }
+        ExpandableCardForComments(
+            title = storiesViewModel.currentPostTitle.value,
+            text = storiesViewModel.currentPostText.value,
+        )
         LazyColumn(
             modifier = Modifier
-                .fillMaxHeight(0.8f)
+                .fillMaxHeight(0.9f)
                 .fillMaxWidth()
         ) {
 
@@ -267,48 +228,66 @@ fun Comments(storiesViewModel: StoriesViewModel) {
         contentAlignment = Alignment.BottomEnd
     ) {
 
-        Row(verticalAlignment = Alignment.Bottom) {
-            val navBarHeight = WindowInsets.navigationBars.getBottom(LocalDensity.current)
 
-            OutlinedTextField(
-                value = storiesViewModel.comment,
-                onValueChange = { storiesViewModel.comment = it },
-                placeholder = { Text("Enter login", color = gray) },
-                textStyle = TextStyle(
-                    color = gray
-                ),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = orange,
-                    unfocusedBorderColor = gray
-                ),
-                shape = RoundedCornerShape(15.dp),
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(bottom = IntPixelsToDp(navBarHeight))
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = black),
+            shape = RectangleShape
+        ) {
+            Row(verticalAlignment = Alignment.Bottom) {
+                val navBarHeight = WindowInsets.navigationBars.getBottom(LocalDensity.current)
+                OutlinedTextField(
+                    value = storiesViewModel.comment,
+                    onValueChange = { storiesViewModel.comment = it },
+                    placeholder = { Text("Enter login", color = gray) },
+                    textStyle = TextStyle(
+                        color = gray
+                    ),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = orange,
+                        unfocusedBorderColor = gray
+                    ),
+                    shape = RoundedCornerShape(15.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(bottom = IntPixelsToDp(navBarHeight))
 
 
-            )
-
-
-            Button(
-                onClick = {
-                    storiesViewModel.sendComment(
-                        storiesViewModel.comment,
-                        storiesViewModel.currentPostId.value ?: -1
-                    )
-                },
-                shape = RoundedCornerShape(15.dp),
-                border = BorderStroke(3.dp, color = gray),
-                colors = ButtonDefaults.outlinedButtonColors(
-                    containerColor = grayDarkDark
-                ),
-                modifier = Modifier.padding(
-                    bottom = IntPixelsToDp(navBarHeight)
                 )
 
-            ) {
-                Image(Icons.Default.PlayArrow, contentDescription = "", Modifier.size(40.dp))
+                val interactionSource = remember { MutableInteractionSource() }
+                val isPressed by interactionSource.collectIsPressedAsState()
+
+                val borderColor by animateColorAsState(
+                    targetValue = if (isPressed) orange else gray,
+                    animationSpec = tween(durationMillis = 10),
+                    label = "border color animation"
+                )
+
+                OutlinedButton(
+                    onClick = {
+                        storiesViewModel.sendComment(
+                            storiesViewModel.comment,
+                            storiesViewModel.currentPostId.value ?: -1
+                        )
+                    },
+                    shape = RoundedCornerShape(15.dp),
+                    border = BorderStroke(3.dp, borderColor),
+                    modifier = Modifier.padding(
+                        bottom = IntPixelsToDp(navBarHeight)
+                    ).background(grayDarkDark),
+                    interactionSource = interactionSource,
+                    colors = ButtonColors(
+                        containerColor = black,
+                        disabledContainerColor = black,
+                        contentColor = orange,
+                        disabledContentColor = orange)
+
+                ) {
+                    Icon(Icons.Default.PlayArrow, contentDescription = "", Modifier.size(40.dp), tint = orange)
+                }
             }
+
         }
     }
 
@@ -434,3 +413,97 @@ fun ExpandableCard(
 
 }
 
+@ExperimentalMaterialApi
+@Composable
+fun ExpandableCardForComments(
+    title: String,
+    text: String,
+) {
+
+    var expandedState by remember {
+        mutableStateOf(false)
+    }
+    val rotationState by animateFloatAsState(
+        targetValue = if (expandedState) 180f else 0f
+    )
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .animateContentSize(
+                animationSpec = TweenSpec(
+                    durationMillis = 300,
+                    easing = LinearOutSlowInEasing
+                )
+            )
+            .padding(10.dp),
+        shape = RoundedCornerShape(12.dp),
+        onClick = {
+            expandedState = !expandedState
+
+
+        },
+        colors = CardDefaults.cardColors(containerColor = grayDark)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    modifier = Modifier
+                        .weight(6f)
+                        .padding(start = 10.dp, end = 10.dp),
+                    text = title.replaceFirstChar { it.uppercase() },
+                    fontSize = 25.sp,
+                    maxLines = 1,
+                    color = orange,
+                    fontFamily = comicRelief
+                )
+                IconButton(
+                    modifier = Modifier
+                        .alpha(ContentAlpha.medium)
+                        .weight(1f)
+                        .rotate(rotationState),
+                    onClick = {
+                        expandedState = !expandedState
+                    },
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowDropDown,
+                        contentDescription = "Drop Down Arrow",
+                        tint = orange
+                    )
+                }
+            }
+            if (expandedState) {
+                Text(
+                    text.replaceFirstChar { it.uppercase() },
+                    Modifier.padding(10.dp),
+                    fontFamily = comicRelief,
+                    color = white
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Icon(
+                        painterResource(
+                            R.drawable.like_border
+                        ),
+                        contentDescription = "",
+                        tint = orange,
+                        modifier = Modifier
+                            .padding(14.dp)
+                            .clickable { }
+                    )
+                }
+            }
+        }
+    }
+
+}
