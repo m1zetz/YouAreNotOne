@@ -40,6 +40,7 @@ android {
 }
 
 dependencies {
+    implementation("androidx.compose.material3:material3:1.4.0-alpha15")
     implementation("com.google.accompanist:accompanist-pager:0.28.0")
     implementation("com.google.accompanist:accompanist-pager-indicators:0.28.0")
     implementation("androidx.navigation:navigation-compose:2.8.4")
@@ -49,6 +50,8 @@ dependencies {
     implementation(libs.androidx.room.runtime.android)
     implementation(libs.androidx.core.telecom)
     implementation(libs.ads.mobile.sdk)
+    implementation(libs.androidx.foundation.layout.android)
+    implementation(libs.androidx.tv.material)
     val nav_version = "2.9.0"
     implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation(libs.androidx.core.ktx)

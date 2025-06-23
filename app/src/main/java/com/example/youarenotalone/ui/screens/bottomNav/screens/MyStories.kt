@@ -141,7 +141,7 @@ fun MyStories(paddingValues: PaddingValues) {
             ) {
                 items(myStoriesViewModel.listOfMyStories) { card ->
 
-                    ExpandableCard(
+                    ExpandableMyCard(
                         title = card.title,
                         text = card.text,
                     )
@@ -296,7 +296,7 @@ fun AddBottomSheet(vmMyStories: MyStoriesViewModel) {
 
 @ExperimentalMaterialApi
 @Composable
-fun ExpandableCard(
+fun ExpandableMyCard(
     title: String,
     text: String,
 ) {
@@ -332,7 +332,9 @@ fun ExpandableCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    modifier = Modifier.weight(6f).padding(start = 10.dp, end = 10.dp),
+                    modifier = Modifier
+                        .weight(6f)
+                        .padding(start = 10.dp, end = 10.dp),
                     text = title.replaceFirstChar { it.uppercase() },
                     fontSize = 25.sp,
                     maxLines = 1,
@@ -376,7 +378,7 @@ fun ExpandableCard(
                         tint = orange,
                         modifier = Modifier
                             .padding(14.dp)
-                            .clickable {  }
+                            .clickable { }
                     )
                     Button(
                         onClick = {},
@@ -397,4 +399,5 @@ fun ExpandableCard(
     }
 
 }
+
 

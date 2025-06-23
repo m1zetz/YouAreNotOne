@@ -93,6 +93,7 @@ class MyStoriesViewModel : ViewModel() {
                             val title = item.getString("title")
                             val text = item.getString("post_text")
                             val user_idServer = item.getInt("user_id")
+                            val post_id = item.getInt("id")
 
                             if (currentUserId != null){
 
@@ -101,7 +102,9 @@ class MyStoriesViewModel : ViewModel() {
                                         Stories(
                                             user_id = user_idServer,
                                             title = title,
-                                            text = text
+                                            text = text,
+                                            post_id = post_id
+
                                         )
                                     )
                                 }

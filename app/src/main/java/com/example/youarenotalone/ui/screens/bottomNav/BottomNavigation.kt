@@ -48,6 +48,8 @@ import androidx.compose.ui.graphics.Color
 
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.example.youarenotalone.ui.screens.vms.StoriesViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -56,7 +58,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun BottomNavigationCompose() {
+fun BottomNavigationCompose(navController: NavController, storiesViewModel: StoriesViewModel) {
 
     val scope = rememberCoroutineScope()
     val pageState = rememberPagerState()
@@ -89,7 +91,7 @@ fun BottomNavigationCompose() {
 
             ) { page ->
             when (page) {
-                stories -> Stories(paddingValues)
+                stories -> Stories(navController, storiesViewModel)
                 my_stories -> MyStories(paddingValues)
                 settings -> Settings(paddingValues)
             }

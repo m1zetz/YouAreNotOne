@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
@@ -18,22 +19,26 @@ import androidx.navigation.compose.rememberNavController
 import com.example.youarenotalone.ui.screens.ScreenSignIn
 import com.example.youarenotalone.ui.screens.ScreenSignUp
 import com.example.youarenotalone.ui.screens.bottomNav.BottomNavigationCompose
+import com.example.youarenotalone.ui.screens.bottomNav.screens.Comments
+import com.example.youarenotalone.ui.screens.bottomNav.screens.ExpandableCard
 import com.example.youarenotalone.ui.screens.vms.BottomNavigationViewModel
 
 import com.example.youarenotalone.ui.screens.vms.SignInViewModel
 import com.example.youarenotalone.ui.screens.vms.SignUpViewModel
+import com.example.youarenotalone.ui.screens.vms.StoriesViewModel
 
 import com.example.youarenotalone.ui.theme.YouAreNotAloneTheme
 import com.example.youarenotalone.ui.theme.black
 import com.example.youarenotalone.ui.theme.orange
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             YouAreNotAloneTheme {
-
+                val vmStories: StoriesViewModel = viewModel()
                 val navController = rememberNavController()
 
                 NavHost(
@@ -59,7 +64,6 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                     ) {
-                        val bottomNavViewModel: BottomNavigationViewModel = viewModel()
                         val signInViewModel: SignInViewModel = viewModel()
                         ScreenSignIn(
                             signInViewModel = signInViewModel,
@@ -113,7 +117,24 @@ class MainActivity : ComponentActivity() {
                             )
 
                         }) {
-                        BottomNavigationCompose()
+                        BottomNavigationCompose(navController, vmStories )
+                    }
+                    composable(commentsScreen,
+                        enterTransition = {
+                            slideIntoContainer(
+                                AnimatedContentTransitionScope.SlideDirection.Right,
+                                tween(1000),
+                                )
+                        },
+                        exitTransition = {
+                            slideOutOfContainer(
+                                AnimatedContentTransitionScope.SlideDirection.Right,
+                                tween(1000)
+                            )
+
+                        }){
+
+                        Comments(vmStories)
                     }
 
                 }
