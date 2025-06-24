@@ -1,4 +1,6 @@
 package com.example.youarenotalone.ui.screens.vms
+import android.content.SharedPreferences
+import android.content.SharedPreferences.Editor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -30,7 +32,10 @@ class SignInViewModel : ViewModel() {
     var messageLogin = mutableStateOf("")
     var messagePassword = mutableStateOf("")
 
+
+
     suspend fun login(): Int = withContext(Dispatchers.IO){
+
         val client = OkHttpClient()
         val json = JSONObject().apply {
             put("login", messageLogin.value)

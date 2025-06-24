@@ -1,5 +1,7 @@
 package com.example.youarenotalone
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,6 +13,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 
@@ -22,7 +25,6 @@ import com.example.youarenotalone.ui.screens.ScreenSignUp
 import com.example.youarenotalone.ui.screens.bottomNav.BottomNavigationCompose
 import com.example.youarenotalone.ui.screens.bottomNav.screens.Comments
 import com.example.youarenotalone.ui.screens.bottomNav.screens.ExpandableCard
-import com.example.youarenotalone.ui.screens.vms.BottomNavigationViewModel
 
 import com.example.youarenotalone.ui.screens.vms.SignInViewModel
 import com.example.youarenotalone.ui.screens.vms.SignUpViewModel
@@ -38,12 +40,42 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
+
+    fun saveId(editor: SharedPreferences.Editor) {
+        editor.apply {
+            putInt("myId", myUserId.value!!)
+        }.apply()
+    }
+
+    fun loadId(sharedPreferences: SharedPreferences) {
+        val savedId = sharedPreferences.getInt("myId", -1)
+        myUserId.value = savedId
+    }
+
+    fun forgetId(editor: SharedPreferences.Editor) {
+        editor.apply {
+            putInt("myId", -1)
+        }.apply()
+    }
+
     @OptIn(ExperimentalMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             YouAreNotAloneTheme {
+
+                val context = LocalContext.current
+                val sharedPreferences =
+                    context.getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE)
+                val editor = sharedPreferences.edit()
+
+                if (myUserId.value!! < 0) {
+                    loadId(sharedPreferences)
+                }
+
+
+                val signInViewModel: SignInViewModel = viewModel()
                 val vmStories: StoriesViewModel = viewModel()
                 val navController = rememberNavController()
 
@@ -70,11 +102,11 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                     ) {
-                        val signInViewModel: SignInViewModel = viewModel()
                         ScreenSignIn(
                             signInViewModel = signInViewModel,
                             toSignUp = { navController.navigate(signUpScreen) },
-                            toMain = {navController.navigate(mainScreen)}
+                            toMain = { navController.navigate(mainScreen) },
+                            sharedPreferences = sharedPreferences
                         )
                     }
                     composable(
@@ -119,14 +151,19 @@ class MainActivity : ComponentActivity() {
                             )
 
                         }) {
-                        BottomNavigationCompose(navController, vmStories )
+                        BottomNavigationCompose(
+                            forgotId = { forgetId(editor) },
+                            navController,
+                            vmStories,
+                            signInViewModel = signInViewModel
+                        )
                     }
                     composable(commentsScreen,
                         enterTransition = {
                             slideIntoContainer(
                                 AnimatedContentTransitionScope.SlideDirection.Right,
                                 tween(1000),
-                                )
+                            )
                         },
                         exitTransition = {
                             slideOutOfContainer(
@@ -134,7 +171,7 @@ class MainActivity : ComponentActivity() {
                                 tween(1000)
                             )
 
-                        }){
+                        }) {
 
                         Comments(vmStories)
                     }

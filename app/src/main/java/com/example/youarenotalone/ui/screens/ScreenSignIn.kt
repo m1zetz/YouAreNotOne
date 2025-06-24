@@ -1,5 +1,7 @@
 package com.example.youarenotalone.ui.screens
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
@@ -44,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -66,14 +69,32 @@ import kotlin.math.tan
 fun ScreenSignIn(
     signInViewModel: SignInViewModel,
     toSignUp: () -> Unit,
-    toMain: () -> Unit
-
+    toMain: () -> Unit,
+    sharedPreferences: SharedPreferences
 ) {
+
+
+
+
 
     var tryLogin by remember { mutableStateOf(false) }
     var wrong by remember { mutableStateOf(false) }
 
+    LaunchedEffect(Unit) {
+        val savedId = sharedPreferences.getInt("myId", -1)
+        if (savedId > 0) {
+            myUserId.value = savedId
+            toMain()
+        }
+    }
+
     LaunchedEffect(tryLogin) {
+
+        if (myUserId.value!! > 0){
+            toMain()
+            tryLogin = false
+        }
+
         if (tryLogin) {
             wrong = false
             val result = signInViewModel.login()
@@ -83,6 +104,7 @@ fun ScreenSignIn(
                 result == -2 -> wrong = true
                 result > 0 -> {
                     myUserId.value = result
+                    sharedPreferences.edit().putInt("myId", result).apply()
                     toMain()
                 }
             }
