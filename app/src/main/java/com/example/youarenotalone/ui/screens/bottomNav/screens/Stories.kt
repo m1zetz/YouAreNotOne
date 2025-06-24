@@ -47,6 +47,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -95,6 +96,7 @@ import com.example.youarenotalone.ui.theme.comicRelief
 import com.example.youarenotalone.ui.theme.gray
 import com.example.youarenotalone.ui.theme.grayDark
 import com.example.youarenotalone.ui.theme.grayDarkDark
+import com.example.youarenotalone.ui.theme.grayWh
 import com.example.youarenotalone.ui.theme.hunninFontFamily
 import com.example.youarenotalone.ui.theme.orange
 import com.example.youarenotalone.ui.theme.white
@@ -368,12 +370,14 @@ fun ExpandableCard(
                 }
             }
             if (expandedState) {
+                HorizontalDivider(thickness = 2.dp, color = grayWh, modifier = Modifier.padding(10.dp))
                 Text(
                     text.replaceFirstChar { it.uppercase() },
                     Modifier.padding(10.dp),
                     fontFamily = comicRelief,
                     color = white
                 )
+                HorizontalDivider(thickness = 2.dp, color = grayWh, modifier = Modifier.padding(10.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),

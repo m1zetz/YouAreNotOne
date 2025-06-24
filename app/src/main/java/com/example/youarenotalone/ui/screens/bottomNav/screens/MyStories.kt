@@ -45,6 +45,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardDefaults.shape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -91,6 +92,7 @@ import com.example.youarenotalone.ui.theme.comicRelief
 import com.example.youarenotalone.ui.theme.gray
 import com.example.youarenotalone.ui.theme.grayDark
 import com.example.youarenotalone.ui.theme.grayDarkDark
+import com.example.youarenotalone.ui.theme.grayWh
 import com.example.youarenotalone.ui.theme.hunninFontFamily
 import com.example.youarenotalone.ui.theme.orange
 import com.example.youarenotalone.ui.theme.pain
@@ -118,7 +120,7 @@ fun MyStories(storiesViewModel: StoriesViewModel, navController: NavController) 
                             modifier = Modifier.fillMaxWidth(),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text("Stories", fontFamily = comicRelief)
+                            Text("My stories", fontFamily = comicRelief)
                         }
                     }
                 )
@@ -142,7 +144,7 @@ fun MyStories(storiesViewModel: StoriesViewModel, navController: NavController) 
             ) {
                 items(myStoriesViewModel.listOfMyStories) { card ->
 
-                    ExpandableCard(
+                    MyExpandableCard(
                         title = card.title,
                         text = card.text,
                         saveCurrentPostId = {
@@ -161,6 +163,20 @@ fun MyStories(storiesViewModel: StoriesViewModel, navController: NavController) 
 
             }
 
+        },
+        floatingActionButton = {
+                FloatingActionButton(
+                    onClick = { myStoriesViewModel.stateOfBottomSheet.value = true },
+                    shape = CircleShape,
+                    modifier = Modifier.size(70.dp),
+                    containerColor = black
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.plus),
+                        tint = pain, contentDescription = "",
+                        modifier = Modifier.size(30.dp)
+                    )
+                }
         }
     )
     AddBottomSheet(myStoriesViewModel)
@@ -293,9 +309,11 @@ fun AddBottomSheet(vmMyStories: MyStoriesViewModel) {
 
 @ExperimentalMaterialApi
 @Composable
-fun ExpandableMyCard(
+fun MyExpandableCard(
     title: String,
     text: String,
+    toCommentsScreen: () -> Unit,
+    saveCurrentPostId: () -> Unit
 ) {
 
     var expandedState by remember {
@@ -318,6 +336,8 @@ fun ExpandableMyCard(
         shape = RoundedCornerShape(12.dp),
         onClick = {
             expandedState = !expandedState
+
+
         },
         colors = CardDefaults.cardColors(containerColor = grayDark)
     ) {
@@ -355,12 +375,14 @@ fun ExpandableMyCard(
                 }
             }
             if (expandedState) {
+                HorizontalDivider(thickness = 2.dp, color = grayWh, modifier = Modifier.padding(10.dp))
                 Text(
                     text.replaceFirstChar { it.uppercase() },
                     Modifier.padding(10.dp),
                     fontFamily = comicRelief,
                     color = white
                 )
+                HorizontalDivider(thickness = 2.dp, color = grayWh, modifier = Modifier.padding(10.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -378,7 +400,10 @@ fun ExpandableMyCard(
                             .clickable { }
                     )
                     Button(
-                        onClick = {},
+                        onClick = {
+                            saveCurrentPostId()
+                            toCommentsScreen()
+                        },
                         shape = RoundedCornerShape(14.dp),
                         colors = ButtonColors(
                             containerColor = gray,
@@ -388,7 +413,7 @@ fun ExpandableMyCard(
                         ),
                         modifier = Modifier.padding(10.dp)
                     ) {
-                        Text("help a person")
+                        Text("view comments")
                     }
                 }
             }
