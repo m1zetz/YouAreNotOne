@@ -111,7 +111,7 @@ def login():
                 user_id = cur.fetchone()[0]
                 return jsonify({"myId": user_id})
             else:
-                return jsonify({"myId": "-1"})
+                return jsonify({"myId": "-2"})
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
