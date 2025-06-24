@@ -103,7 +103,7 @@ def login():
             result = cur.fetchone()
 
             if result is None:
-                return jsonify({"status": "error", "message": "User not found"}), 404
+                return jsonify({"myId": "-1"}),
 
             password_hash = result[0]
             if bcrypt.verify(password, password_hash):
@@ -111,7 +111,7 @@ def login():
                 user_id = cur.fetchone()[0]
                 return jsonify({"myId": user_id})
             else:
-                return jsonify({"status": "error", "message": "Wrong password"}), 401
+                return jsonify({"myId": "-1"})
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
