@@ -81,7 +81,6 @@ class StoriesViewModel : ViewModel() {
                                     comment = comment
                                 )
                             )
-                            Log.d("comments", "Загруженные комментарии: $comments")
                         }
 
                         serverResponse.value = "Успешно загружено"

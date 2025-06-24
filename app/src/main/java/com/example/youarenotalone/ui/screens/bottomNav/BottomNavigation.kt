@@ -49,6 +49,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.youarenotalone.ui.screens.vms.Stories
 import com.example.youarenotalone.ui.screens.vms.StoriesViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -92,7 +93,7 @@ fun BottomNavigationCompose(navController: NavController, storiesViewModel: Stor
             ) { page ->
             when (page) {
                 stories -> Stories(navController, storiesViewModel)
-                my_stories -> MyStories(paddingValues)
+                my_stories -> MyStories(storiesViewModel, navController)
                 settings -> Settings(paddingValues)
             }
         }

@@ -79,8 +79,11 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.youarenotalone.R
+import com.example.youarenotalone.commentsScreen
 import com.example.youarenotalone.ui.screens.vms.MyStoriesViewModel
+import com.example.youarenotalone.ui.screens.vms.StoriesViewModel
 import com.example.youarenotalone.ui.screens.vms.myUserId
 import com.example.youarenotalone.ui.theme.bgColor
 import com.example.youarenotalone.ui.theme.black
@@ -96,8 +99,7 @@ import com.example.youarenotalone.ui.theme.white
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
-fun MyStories(paddingValues: PaddingValues) {
-
+fun MyStories(storiesViewModel: StoriesViewModel, navController: NavController) {
     val myStoriesViewModel: MyStoriesViewModel = viewModel()
 
     myStoriesViewModel.getMyStories()
@@ -116,7 +118,7 @@ fun MyStories(paddingValues: PaddingValues) {
                             modifier = Modifier.fillMaxWidth(),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text("My stories", fontFamily = comicRelief)
+                            Text("Stories", fontFamily = comicRelief)
                         }
                     }
                 )
@@ -130,40 +132,35 @@ fun MyStories(paddingValues: PaddingValues) {
 
 
         },
-        content = { innerPadding ->
+        content = { paddingValues ->
             LazyColumn(
                 modifier = Modifier
-                    .padding(paddingValues)
-                    .padding(innerPadding)
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .padding(top = paddingValues.calculateTopPadding()),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 items(myStoriesViewModel.listOfMyStories) { card ->
 
-                    ExpandableMyCard(
+                    ExpandableCard(
                         title = card.title,
                         text = card.text,
+                        saveCurrentPostId = {
+                            storiesViewModel.currentPostTitle.value = card.title
+                            storiesViewModel.currentPostText.value = card.text
+                            storiesViewModel.currentPostId.value = card.post_id
+                        },
+                        toCommentsScreen = {
+                            navController.navigate(commentsScreen)
+                        }
+
                     )
+
 
                 }
 
             }
 
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { myStoriesViewModel.stateOfBottomSheet.value = true },
-                shape = CircleShape,
-                modifier = Modifier.size(70.dp),
-                containerColor = black
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.plus),
-                    tint = pain, contentDescription = "",
-                    modifier = Modifier.size(30.dp)
-                )
-            }
         }
     )
     AddBottomSheet(myStoriesViewModel)

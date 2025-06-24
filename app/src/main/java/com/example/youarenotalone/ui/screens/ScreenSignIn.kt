@@ -33,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,20 +51,48 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.youarenotalone.R
 import com.example.youarenotalone.ui.screens.vms.SignInViewModel
+import com.example.youarenotalone.ui.screens.vms.myUserId
 import com.example.youarenotalone.ui.theme.black
 import com.example.youarenotalone.ui.theme.comicRelief
 import com.example.youarenotalone.ui.theme.gray
 import com.example.youarenotalone.ui.theme.hunninFontFamily
 import com.example.youarenotalone.ui.theme.listOfColorsSlogan
 import com.example.youarenotalone.ui.theme.orange
+import com.example.youarenotalone.ui.theme.red
+import kotlinx.coroutines.delay
 import kotlin.math.tan
 
 @Composable
 fun ScreenSignIn(
     signInViewModel: SignInViewModel,
     toSignUp: () -> Unit,
-    login: () -> Unit,
+    toMain: () -> Unit
+
 ) {
+
+    var tryLogin by remember { mutableStateOf(false) }
+    var wrong by remember { mutableStateOf(false) }
+
+    LaunchedEffect(tryLogin) {
+        if (tryLogin) {
+            wrong = false
+            val result = signInViewModel.login()
+
+
+            when {
+                result == -2 -> wrong = true
+                result > 0 -> {
+                    myUserId.value = result
+                    toMain()
+                }
+            }
+
+            tryLogin = false
+
+        }
+    }
+
+
     Column(
         modifier = Modifier
             .background(color = black)
@@ -72,16 +101,7 @@ fun ScreenSignIn(
         verticalArrangement = Arrangement.Center
     ) {
 
-        var visible by remember { mutableStateOf(false) }
 
-
-//        AnimatedVisibility(
-//            visible = visible,
-//            enter = fadeIn(animationSpec = tween(durationMillis = 1500, easing = LinearEasing))
-//
-//        ) {
-//
-//        }
         Text(
             "You are not alone.",
             style = TextStyle(
@@ -95,11 +115,23 @@ fun ScreenSignIn(
             )
 
 
+        if (wrong){
+            Spacer(modifier = Modifier.size(20.dp))
+
+            Text(
+                "Wrong login on password",
+                color = red,
+                fontSize = 20.sp,
+                fontFamily = comicRelief,
+                )
+        }
+
         Spacer(modifier = Modifier.size(20.dp))
 
         OutlinedTextField(
             value = signInViewModel.messageLogin.value,
-            onValueChange = { signInViewModel.messageLogin.value = it },
+            onValueChange = { signInViewModel.messageLogin.value = it
+                if (wrong) wrong = false},
             placeholder = { Text("Enter login", color = gray) },
             textStyle = TextStyle(
                 color = gray
@@ -116,7 +148,8 @@ fun ScreenSignIn(
 
         OutlinedTextField(
             value = signInViewModel.messagePassword.value,
-            onValueChange = { signInViewModel.messagePassword.value = it },
+            onValueChange = { signInViewModel.messagePassword.value = it
+                if (wrong) wrong = false},
             placeholder = { Text("Enter password", color = gray) },
             textStyle = TextStyle(
                 color = gray
@@ -132,7 +165,7 @@ fun ScreenSignIn(
 
         Text(
             "Sign In",
-            Modifier.clickable {login()},
+            Modifier.clickable {tryLogin = true},
             color = orange,
             fontFamily = comicRelief
         )

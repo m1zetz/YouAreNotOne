@@ -1,5 +1,6 @@
 package com.example.youarenotalone.ui.screens.vms
-
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 
 import android.net.http.UrlRequest
@@ -23,46 +24,41 @@ import org.json.JSONObject
 import androidx.compose.runtime.mutableStateOf
 import androidx.room.util.copy
 
-var myUserId = mutableStateOf<Int?>(null)
+var myUserId = mutableStateOf<Int?>(-1)
 
 class SignInViewModel : ViewModel() {
     var messageLogin = mutableStateOf("")
     var messagePassword = mutableStateOf("")
 
-    fun login() {
+    suspend fun login(): Int = withContext(Dispatchers.IO){
         val client = OkHttpClient()
-        val json = JSONObject()
-        json.put("login", messageLogin.value)
-        json.put("password", messagePassword.value)
+        val json = JSONObject().apply {
+            put("login", messageLogin.value)
+            put("password", messagePassword.value)
+        }
 
-        val requestBody = json.toString().toRequestBody("application/json".toMediaType())
+        val requestBody = json.toString()
+            .toRequestBody("application/json".toMediaType())
 
         val request = Request.Builder()
             .url("https://youarenotone.onrender.com/login")
             .post(requestBody)
             .build()
 
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                Log.d("FLASK", "Ошибка: ${e.message}")
-            }
+        try {
+            val response = client.newCall(request).execute()
+            val body = response.body?.string()
+            val myId = JSONObject(body ?: "{}").optString("myId", "-2")
+            Log.d("FLASK", "myId: $myId")
 
-            override fun onResponse(call: Call, response: Response) {
-                val body = response.body?.string()
-                val myId = try {
-                    JSONObject(body ?: "{}").optString("myId", "нет id")
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    "ошибка"
-                }
-
-                Log.d("FLASK", "myId: $myId")
-                myUserId.value = myId.toInt()
-            }
-        })
-        messageLogin.value = ""
-        messagePassword.value = ""
+            myId.toIntOrNull() ?: -2
+        } catch (e: Exception) {
+            Log.e("LOGIN", "Ошибка при логине", e)
+            -2
+        } finally {
+            messageLogin.value = ""
+            messagePassword.value = ""
+        }
 
     }
-
 }

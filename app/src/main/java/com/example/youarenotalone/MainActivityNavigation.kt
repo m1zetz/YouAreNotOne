@@ -8,6 +8,7 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
@@ -26,10 +27,15 @@ import com.example.youarenotalone.ui.screens.vms.BottomNavigationViewModel
 import com.example.youarenotalone.ui.screens.vms.SignInViewModel
 import com.example.youarenotalone.ui.screens.vms.SignUpViewModel
 import com.example.youarenotalone.ui.screens.vms.StoriesViewModel
+import com.example.youarenotalone.ui.screens.vms.myUserId
 
 import com.example.youarenotalone.ui.theme.YouAreNotAloneTheme
 import com.example.youarenotalone.ui.theme.black
 import com.example.youarenotalone.ui.theme.orange
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterialApi::class)
@@ -68,10 +74,7 @@ class MainActivity : ComponentActivity() {
                         ScreenSignIn(
                             signInViewModel = signInViewModel,
                             toSignUp = { navController.navigate(signUpScreen) },
-                            login = {
-                                signInViewModel.login()
-                                navController.navigate(mainScreen)
-                            }
+                            toMain = {navController.navigate(mainScreen)}
                         )
                     }
                     composable(
@@ -96,9 +99,8 @@ class MainActivity : ComponentActivity() {
                             signUpViewModel = signUpViewModel,
                             toSignIn = { navController.popBackStack() },
                             register = {
-                                signUpViewModel.register(
-
-                                )
+                                signUpViewModel.register()
+                                navController.popBackStack()
                             }
                         )
                     }
@@ -128,7 +130,7 @@ class MainActivity : ComponentActivity() {
                         },
                         exitTransition = {
                             slideOutOfContainer(
-                                AnimatedContentTransitionScope.SlideDirection.Right,
+                                AnimatedContentTransitionScope.SlideDirection.Left,
                                 tween(1000)
                             )
 
