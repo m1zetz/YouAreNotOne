@@ -103,7 +103,7 @@ def login():
             result = cur.fetchone()
 
             if result is None:
-                return jsonify({"myId": "-1"}),
+                return jsonify({"myId": "-2"}),
 
             password_hash = result[0]
             if bcrypt.verify(password, password_hash):
