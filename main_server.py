@@ -15,16 +15,19 @@ CORS(app)
 
 #_________________________________________Likes__________________________________________
 
-@app.route("/get_likes", methods=["GET"])
-def get_get_likes():
+@app.route("/get_likes", methods=["POST"])
+def get_likes():
      with get_connection() as conn:
+
+        data = request.json
+        post_id = data["post_id"]
+        
         with conn.cursor() as cur:
-            cur.execute("SELECT post_id, user_id FROM posts_likes")
-            rows = cur.fetchall()
+            cur.execute("SELECT COUNT(*) FROM posts_likes WHERE post_id = %s;",(post_id,))
+            row = cur.fetchone()
 
-            posts = [{"post_id": row[0], "user_id": row[1]} for row in rows]
-
-            return jsonify(posts)
+            count = {"count": row[0]}
+            return jsonify(count)
 
 @app.route("/add_like", methods=["POST"])
 def add_like():
