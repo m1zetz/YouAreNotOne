@@ -17,17 +17,24 @@ CORS(app)
 
 @app.route("/get_likes", methods=["POST"])
 def get_likes():
-     with get_connection() as conn:
+    with get_connection() as conn:
 
         data = request.json
         post_id = data["post_id"]
-        
+            
         with conn.cursor() as cur:
             cur.execute("SELECT COUNT(*) FROM posts_likes WHERE post_id = %s;",(post_id,))
-            row = cur.fetchone()
+            like_count = cur.fetchone()[0]
+            
+            cur.execute("SELECT user_id FROM posts_likes WHERE post_id = %s;",(post_id,))
+            liked_by = [r[0] for r in cur.fetchall()]
 
-            count = {"count": row[0]}
-            return jsonify(count)
+            data = {
+                "count": like_count,
+                "liked_by": liked_by
+            }
+        
+            return jsonify(data)
 
 @app.route("/add_like", methods=["POST"])
 def add_like():
