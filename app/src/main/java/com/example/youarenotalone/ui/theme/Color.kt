@@ -23,3 +23,4 @@ val red = Color(0xFFFF5050)
 
 val pain = Color(0xFFFF7171)
 val bgColor = Color(0xFF151515)
+

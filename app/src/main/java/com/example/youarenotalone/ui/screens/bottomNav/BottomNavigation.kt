@@ -4,6 +4,7 @@ import com.example.youarenotalone.ui.drawTopBorder
 import com.example.youarenotalone.ui.drawBottomBorder
 
 import android.annotation.SuppressLint
+import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
@@ -60,7 +61,13 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun BottomNavigationCompose(forgotId: () -> Unit,navController: NavController, storiesViewModel: StoriesViewModel, signInViewModel: SignInViewModel) {
+fun BottomNavigationCompose(
+    forgotId: () -> Unit, navController: NavController,
+    storiesViewModel: StoriesViewModel,
+    signInViewModel:
+    SignInViewModel,
+    context: Context
+) {
 
     val scope = rememberCoroutineScope()
     val pageState = rememberPagerState()
@@ -95,7 +102,13 @@ fun BottomNavigationCompose(forgotId: () -> Unit,navController: NavController, s
             when (page) {
                 stories -> Stories(navController, storiesViewModel)
                 my_stories -> MyStories(storiesViewModel, navController)
-                settings -> Settings(forgotId = {forgotId()},paddingValues, navController, signInViewModel)
+                settings -> Settings(
+                    forgotId = { forgotId() },
+                    paddingValues,
+                    navController,
+                    signInViewModel,
+                    context
+                )
             }
         }
 
@@ -133,7 +146,7 @@ fun BottomNavigationBar(
                         selectedIconColor = pain,
                         unselectedIconColor = gray,
                         indicatorColor = black
-                        ),
+                    ),
                 )
             }
         }

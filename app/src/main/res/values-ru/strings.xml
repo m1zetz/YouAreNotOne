@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Ты не один.</string>
+    <string name="Language">Язык</string>
+    <string name="stories">Истории</string>
+    <string name="my_stories">Мои истории</string>
+    <string name="settings">Настройки</string>
+    <string name="exit">Выход</string>
+    <string name="describe">Опишите свою историю</string>
+    <string name="title">Название (длина 40 символов)</string>
+    <string name="story">История (длина - 1000 символов)</string>
+    <string name="send_story">Отправить историю</string>
+    <string name="view_comments">Просмотреть комментарии</string>
+    <string name="help">Помочь человеку</string>
+    <string name="signin">Войти</string>
+    <string name="signup">Зарегистрироваться</string>
+    <string name="enter_login">Введите логин</string>
+    <string name="enter_password">Введите пароль</string>
+    <string name="wrong">Неправильный логин или пароль</string>
+</resources>

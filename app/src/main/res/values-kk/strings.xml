@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Сіз жалғыз емессіз.</string>
+    <string name="Language">Тіл</string>
+    <string name="stories">Әңгімелер</string>
+    <string name="my_stories">Менің әңгімелерім</string>
+    <string name="settings">Параметрлер</string>
+    <string name="exit">Шығу</string>
+    <string name="describe">Өз әңгіме сипаттаңыз</string>
+    <string name="title">Тақырып (ұзындығы 40 таңба)</string>
+    <string name="story">Әңгіме (ұзындығы - 1000 таңба)</string>
+    <string name="send_story">Әңгіме жіберіңіз</string>
+    <string name="view_comments">Пікірлерді қарау</string>
+    <string name="help">Адамға көмектесу</string>
+    <string name="signin">Кіру</string>
+    <string name="signup">Тіркелу</string>
+    <string name="enter_login">Кіруді енгізіңіз</string>
+    <string name="enter_password">Құпия сөзді енгізіңіз</string>
+    <string name="wrong">Қате кіру немесе құпия сөзді</string>
+</resources>

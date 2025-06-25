@@ -29,10 +29,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.youarenotalone.R
 import com.example.youarenotalone.ui.screens.vms.SignUpViewModel
 import com.example.youarenotalone.ui.theme.Purple40
 import com.example.youarenotalone.ui.theme.black
@@ -74,7 +76,7 @@ fun ScreenSignUp(
         OutlinedTextField(
             value = signUpViewModel.messageLogin.value,
             onValueChange = { signUpViewModel.messageLogin.value = it },
-            placeholder = { Text("Enter login", color = gray) },
+            placeholder = { Text(stringResource(R.string.enter_login), color = gray) },
             textStyle = TextStyle(
                 color = gray
             ),
@@ -91,7 +93,7 @@ fun ScreenSignUp(
         OutlinedTextField(
             value = signUpViewModel.messagePassword.value,
             onValueChange = { signUpViewModel.messagePassword.value = it },
-            placeholder = { Text("Enter password", color = gray) },
+            placeholder = { Text(stringResource(R.string.enter_password), color = gray) },
             textStyle = TextStyle(
                 color = gray
             ),
@@ -105,7 +107,7 @@ fun ScreenSignUp(
         Spacer(modifier = Modifier.size(20.dp))
 
         Text(
-            "Sign Up",
+            stringResource(R.string.signup),
             Modifier.clickable { register() },
             color = orange,
             fontFamily = comicRelief
@@ -114,7 +116,7 @@ fun ScreenSignUp(
         Spacer(modifier = Modifier.size(20.dp))
 
         Text(
-            "Sign In",
+            stringResource(R.string.signin),
             Modifier.clickable { toSignIn() },
             color = orange,
             fontFamily = comicRelief

@@ -74,6 +74,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -125,7 +126,7 @@ fun Stories(navController: NavController, storiesViewModel: StoriesViewModel) {
                             modifier = Modifier.fillMaxWidth(),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text("Stories", fontFamily = comicRelief)
+                            Text(stringResource(R.string.stories), fontFamily = comicRelief)
                         }
                     }
                 )
@@ -408,7 +409,7 @@ fun ExpandableCard(
                         ),
                         modifier = Modifier.padding(10.dp)
                     ) {
-                        Text("help a person")
+                        Text(stringResource(R.string.help))
                     }
                 }
             }

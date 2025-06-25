@@ -116,7 +116,6 @@ class StoriesViewModel : ViewModel() {
             }
 
             override fun onResponse(call: Call, response: Response) {
-                Log.d("HTTP", "Успех: ${response.code}")
                 getComments()
             }
 

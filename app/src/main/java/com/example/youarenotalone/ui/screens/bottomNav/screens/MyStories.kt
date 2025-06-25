@@ -72,6 +72,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -120,7 +121,7 @@ fun MyStories(storiesViewModel: StoriesViewModel, navController: NavController) 
                             modifier = Modifier.fillMaxWidth(),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text("My stories", fontFamily = comicRelief)
+                            Text(stringResource(R.string.my_stories), fontFamily = comicRelief)
                         }
                     }
                 )
@@ -204,10 +205,11 @@ fun AddBottomSheet(vmMyStories: MyStoriesViewModel) {
                 ) {
 
                     Text(
-                        "Describe your story",
+                        stringResource(R.string.describe),
                         color = orange,
-                        fontSize = 40.sp,
-                        fontFamily = comicRelief
+                        fontSize = 30.sp,
+                        fontFamily = comicRelief,
+                        modifier = Modifier.padding(horizontal = 10.dp)
                     )
 
                     Spacer(modifier = Modifier.size(15.dp))
@@ -221,7 +223,7 @@ fun AddBottomSheet(vmMyStories: MyStoriesViewModel) {
                         },
                         placeholder = {
                             Text(
-                                "Title (length is 40 characters) ",
+                                stringResource(R.string.title),
                                 color = gray,
                                 fontSize = 20.sp,
                                 fontFamily = comicRelief
@@ -254,7 +256,7 @@ fun AddBottomSheet(vmMyStories: MyStoriesViewModel) {
                         },
                         placeholder = {
                             Text(
-                                "Story (length is 1000 characters)",
+                                stringResource(R.string.story),
                                 color = gray,
                                 fontSize = 20.sp,
                                 fontFamily = comicRelief
@@ -289,7 +291,7 @@ fun AddBottomSheet(vmMyStories: MyStoriesViewModel) {
                             )
                         }) {
                         Text(
-                            "Send story",
+                            stringResource(R.string.send_story),
                             color = gray,
                             fontSize = 20.sp,
                             fontFamily = comicRelief
@@ -413,7 +415,7 @@ fun MyExpandableCard(
                         ),
                         modifier = Modifier.padding(10.dp)
                     ) {
-                        Text("view comments")
+                        Text(stringResource(R.string.view_comments))
                     }
                 }
             }

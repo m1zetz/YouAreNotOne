@@ -41,6 +41,8 @@ android {
 
 dependencies {
 
+    implementation ("androidx.appcompat:appcompat:1.6.1")
+    implementation (    "com.google.android.material:material:1.12.0")
     implementation("com.google.accompanist:accompanist-pager:0.28.0")
     implementation("com.google.accompanist:accompanist-pager-indicators:0.28.0")
     implementation("androidx.navigation:navigation-compose:2.8.4")
