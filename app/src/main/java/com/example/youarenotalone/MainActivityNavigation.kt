@@ -80,11 +80,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun saveId(editor: SharedPreferences.Editor) {
-        editor.apply {
-            putInt("myId", myUserId.value!!)
-        }.apply()
-    }
 
     fun loadId(sharedPreferences: SharedPreferences) {
         val savedId = sharedPreferences.getInt("myId", -1)
@@ -145,7 +140,10 @@ class MainActivity : AppCompatActivity() {
                         ScreenSignIn(
                             signInViewModel = signInViewModel,
                             toSignUp = { navController.navigate(signUpScreen) },
-                            toMain = { navController.navigate(mainScreen) },
+                            toMain = { navController.navigate(mainScreen){
+                                popUpTo(0) { inclusive = true }
+                                launchSingleTop = true
+                            } },
                             sharedPreferences = sharedPreferences
                         )
                     }
