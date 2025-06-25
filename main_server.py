@@ -50,6 +50,19 @@ def add_like():
             conn.commit()
  
             return jsonify({"status": "ok"}), 200
+    
+@app.route("/drop_like", methods=["POST"])
+def drop_like():
+    with get_connection() as conn:
+
+        data = request.json
+        post_id = data["post_id"]
+        user_id = data["user_id"]
+            
+        with conn.cursor() as cur:
+            cur.execute("DELETE FROM posts_likes WHERE post_id = %s AND user_id = %s;",(post_id,user_id))
+        
+            return jsonify({"status": "ok"}), 200
 
 #_______________________________________Comments____________________________________________
 
