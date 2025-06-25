@@ -13,9 +13,39 @@ def get_connection():
 
 CORS(app)
 
+#_________________________________________Likes__________________________________________
+
+@app.route("/get_likes", methods=["GET"])
+def get_get_likes():
+     with get_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT post_id, user_id FROM posts_likes")
+            rows = cur.fetchall()
+
+            posts = [{"post_id": row[0], "user_id": row[1]} for row in rows]
+
+            return jsonify(posts)
+
+@app.route("/add_like", methods=["POST"])
+def add_like():
+     with get_connection() as conn:
+
+        data = request.json
+        post_id = data["post_id"]
+        user_id = data["user_id"]
+
+        with conn.cursor() as cur:
+            cur.execute("INSERT INTO posts_likes (post_id, user_id) VALUES (%s, %s)",
+                    (post_id, user_id))
+            conn.commit()
+ 
+            return jsonify({"status": "ok"}), 200
+
+#_______________________________________Comments____________________________________________
+
+
 @app.route("/get_comments", methods=["GET"])
 def get_comments():
-     print("🔵 [FLASK] Получен GET-запрос на /get_comments")
      with get_connection() as conn:
         with conn.cursor() as cur:
             cur.execute("SELECT posts, comments FROM posts_comments")
@@ -39,6 +69,8 @@ def add_comment():
             conn.commit()
  
             return jsonify({"status": "ok"}), 200
+
+#_______________________________________Posts___________________________________________
 
 @app.route("/get_all_posts", methods=["GET"])
 def get_posts():
@@ -71,10 +103,10 @@ def add_post():
         return jsonify({"status": "ok"}), 200
 
     except Exception as e:
-        print("Ошибка при обработке /add_post:")
         traceback.print_exc()
         return jsonify({"error": "internal server error"}), 500
 
+#_______________________________________Login____________________________________________
 
 @app.route("/register", methods=["POST"])
 def register():
@@ -112,6 +144,9 @@ def login():
                 return jsonify({"myId": user_id})
             else:
                 return jsonify({"myId": "-2"})
+
+
+#_____________________________________Main______________________________________________
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
