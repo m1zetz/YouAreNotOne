@@ -1,9 +1,7 @@
 package com.example.youarenotalone.ui.screens.bottomNav.screens
 
 
-import ads_mobile_sdk.h6
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
@@ -11,7 +9,6 @@ import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -19,7 +16,6 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -31,38 +27,31 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material.Shapes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -70,26 +59,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.tv.material3.OutlinedButtonDefaults
 import com.example.youarenotalone.R
 import com.example.youarenotalone.commentsScreen
-import com.example.youarenotalone.ui.screens.vms.MyStoriesViewModel
 import com.example.youarenotalone.ui.screens.vms.StoriesViewModel
+import com.example.youarenotalone.ui.screens.vms.myUserId
 import com.example.youarenotalone.ui.theme.bgColor
 import com.example.youarenotalone.ui.theme.black
 import com.example.youarenotalone.ui.theme.blue
@@ -98,8 +82,8 @@ import com.example.youarenotalone.ui.theme.gray
 import com.example.youarenotalone.ui.theme.grayDark
 import com.example.youarenotalone.ui.theme.grayDarkDark
 import com.example.youarenotalone.ui.theme.grayWh
-import com.example.youarenotalone.ui.theme.hunninFontFamily
 import com.example.youarenotalone.ui.theme.orange
+import com.example.youarenotalone.ui.theme.pain
 import com.example.youarenotalone.ui.theme.white
 
 
@@ -160,8 +144,11 @@ fun Stories(navController: NavController, storiesViewModel: StoriesViewModel) {
                         },
                         toCommentsScreen = {
                             navController.navigate(commentsScreen)
-                        }
-
+                        },
+                        commentsButtonString = stringResource(R.string.help),
+                        storiesViewModel = storiesViewModel,
+                        post_id = card.post_id,
+                        user_id = card.user_id
                     )
 
 
@@ -276,18 +263,26 @@ fun Comments(storiesViewModel: StoriesViewModel) {
                     },
                     shape = RoundedCornerShape(15.dp),
                     border = BorderStroke(3.dp, borderColor),
-                    modifier = Modifier.padding(
-                        bottom = IntPixelsToDp(navBarHeight)
-                    ).background(grayDarkDark),
+                    modifier = Modifier
+                        .padding(
+                            bottom = IntPixelsToDp(navBarHeight)
+                        )
+                        .background(grayDarkDark),
                     interactionSource = interactionSource,
                     colors = ButtonColors(
                         containerColor = black,
                         disabledContainerColor = black,
                         contentColor = orange,
-                        disabledContentColor = orange)
+                        disabledContentColor = orange
+                    )
 
                 ) {
-                    Icon(Icons.Default.PlayArrow, contentDescription = "", Modifier.size(40.dp), tint = orange)
+                    Icon(
+                        Icons.Default.PlayArrow,
+                        contentDescription = "",
+                        Modifier.size(40.dp),
+                        tint = orange
+                    )
                 }
             }
 
@@ -306,10 +301,14 @@ fun IntPixelsToDp(px: Int): Dp {
 @ExperimentalMaterialApi
 @Composable
 fun ExpandableCard(
+    storiesViewModel: StoriesViewModel,
     title: String,
     text: String,
     toCommentsScreen: () -> Unit,
-    saveCurrentPostId: () -> Unit
+    saveCurrentPostId: () -> Unit,
+    commentsButtonString: String,
+    post_id: Int,
+    user_id: Int
 ) {
 
     var expandedState by remember {
@@ -371,45 +370,101 @@ fun ExpandableCard(
                 }
             }
             if (expandedState) {
-                HorizontalDivider(thickness = 2.dp, color = grayWh, modifier = Modifier.padding(10.dp))
+                HorizontalDivider(
+                    thickness = 2.dp,
+                    color = grayWh,
+                    modifier = Modifier.padding(10.dp)
+                )
                 Text(
                     text.replaceFirstChar { it.uppercase() },
                     Modifier.padding(10.dp),
                     fontFamily = comicRelief,
                     color = white
                 )
-                HorizontalDivider(thickness = 2.dp, color = grayWh, modifier = Modifier.padding(10.dp))
+                HorizontalDivider(
+                    thickness = 2.dp,
+                    color = grayWh,
+                    modifier = Modifier.padding(10.dp)
+                )
+
+                val likeBorder = painterResource(R.drawable.like_border)
+                val likefull = painterResource(R.drawable.like_full)
+                var currentIcon: Painter
+
+                var likes by remember { mutableStateOf<Int?>(-1) }
+                var idLikesList = remember { mutableStateListOf<Int>() }
+
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start
                 ) {
+                    val userId = myUserId.value ?: -1
+                    if (idLikesList.contains(userId)) {
+                        currentIcon = likefull
+                    }else {
+                        currentIcon = likeBorder
+                    }
+
                     Icon(
-                        painterResource(
-                            R.drawable.like_border
-                        ),
+                        currentIcon,
                         contentDescription = "",
-                        tint = orange,
+                        tint = pain,
                         modifier = Modifier
-                            .padding(14.dp)
-                            .clickable { }
+                            .padding(start = 10.dp)
+                            .clickable {                                                 //LIKE
+                                val userId = myUserId.value ?: return@clickable
+                                if (!idLikesList.contains(userId)) {
+                                    storiesViewModel.addLike(post_id, userId)
+                                    idLikesList.add(userId)
+                                    likes = (likes ?: 0) + 1
+                                } else {
+                                    storiesViewModel.dropLike(post_id, userId)
+                                    idLikesList.remove(userId)
+                                    likes = (likes ?: 0) - 1
+                                }
+                            }
                     )
+
+
+
+                    LaunchedEffect(post_id, user_id) {
+                        storiesViewModel.getLikes(post_id, user_id) { count, idArray ->
+                            likes = count
+                            for (id in idArray) {
+                                idLikesList.add(id)
+                            }
+                        }
+                    }
+
+                    Text(
+                        text = when (likes) {
+                            null -> "Загрузка..."
+                            -1 -> "Ошибка"
+                            else -> likes.toString()
+                        },
+                        modifier = Modifier.padding(horizontal = 5.dp),
+                        fontSize = 20.sp,
+                        fontFamily = comicRelief,
+                        color = pain
+                    )
+
                     Button(
                         onClick = {
                             saveCurrentPostId()
                             toCommentsScreen()
                         },
-                        shape = RoundedCornerShape(14.dp),
+                        shape = RoundedCornerShape(10.dp),
                         colors = ButtonColors(
                             containerColor = gray,
                             contentColor = grayDark,
                             disabledContentColor = grayDark,
                             disabledContainerColor = gray,
                         ),
-                        modifier = Modifier.padding(10.dp)
+                        modifier = Modifier.padding(start = 5.dp)
                     ) {
-                        Text(stringResource(R.string.help))
+                        Text(commentsButtonString)
                     }
                 }
             }
@@ -501,7 +556,7 @@ fun ExpandableCardForComments(
                             R.drawable.like_border
                         ),
                         contentDescription = "",
-                        tint = orange,
+                        tint = pain,
                         modifier = Modifier
                             .padding(14.dp)
                             .clickable { }

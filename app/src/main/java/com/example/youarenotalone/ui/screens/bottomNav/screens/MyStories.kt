@@ -145,7 +145,7 @@ fun MyStories(storiesViewModel: StoriesViewModel, navController: NavController) 
             ) {
                 items(myStoriesViewModel.listOfMyStories) { card ->
 
-                    MyExpandableCard(
+                    ExpandableCard(
                         title = card.title,
                         text = card.text,
                         saveCurrentPostId = {
@@ -155,7 +155,11 @@ fun MyStories(storiesViewModel: StoriesViewModel, navController: NavController) 
                         },
                         toCommentsScreen = {
                             navController.navigate(commentsScreen)
-                        }
+                        },
+                        commentsButtonString = stringResource(R.string.view_comments),
+                        storiesViewModel = storiesViewModel,
+                        post_id = card.post_id,
+                        user_id = card.user_id
 
                     )
 
@@ -166,18 +170,18 @@ fun MyStories(storiesViewModel: StoriesViewModel, navController: NavController) 
 
         },
         floatingActionButton = {
-                FloatingActionButton(
-                    onClick = { myStoriesViewModel.stateOfBottomSheet.value = true },
-                    shape = CircleShape,
-                    modifier = Modifier.size(70.dp),
-                    containerColor = black
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.plus),
-                        tint = pain, contentDescription = "",
-                        modifier = Modifier.size(30.dp)
-                    )
-                }
+            FloatingActionButton(
+                onClick = { myStoriesViewModel.stateOfBottomSheet.value = true },
+                shape = CircleShape,
+                modifier = Modifier.size(70.dp),
+                containerColor = black
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.plus),
+                    tint = pain, contentDescription = "",
+                    modifier = Modifier.size(30.dp)
+                )
+            }
         }
     )
     AddBottomSheet(myStoriesViewModel)
@@ -308,120 +312,5 @@ fun AddBottomSheet(vmMyStories: MyStoriesViewModel) {
 
 }
 
-
-@ExperimentalMaterialApi
-@Composable
-fun MyExpandableCard(
-    title: String,
-    text: String,
-    toCommentsScreen: () -> Unit,
-    saveCurrentPostId: () -> Unit
-) {
-
-    var expandedState by remember {
-        mutableStateOf(false)
-    }
-    val rotationState by animateFloatAsState(
-        targetValue = if (expandedState) 180f else 0f
-    )
-
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .animateContentSize(
-                animationSpec = TweenSpec(
-                    durationMillis = 300,
-                    easing = LinearOutSlowInEasing
-                )
-            )
-            .padding(10.dp),
-        shape = RoundedCornerShape(12.dp),
-        onClick = {
-            expandedState = !expandedState
-
-
-        },
-        colors = CardDefaults.cardColors(containerColor = grayDark)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    modifier = Modifier
-                        .weight(6f)
-                        .padding(start = 10.dp, end = 10.dp),
-                    text = title.replaceFirstChar { it.uppercase() },
-                    fontSize = 25.sp,
-                    maxLines = 1,
-                    color = orange,
-                    fontFamily = comicRelief
-                )
-                IconButton(
-                    modifier = Modifier
-                        .alpha(ContentAlpha.medium)
-                        .weight(1f)
-                        .rotate(rotationState),
-                    onClick = {
-                        expandedState = !expandedState
-                    },
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowDropDown,
-                        contentDescription = "Drop Down Arrow",
-                        tint = orange
-                    )
-                }
-            }
-            if (expandedState) {
-                HorizontalDivider(thickness = 2.dp, color = grayWh, modifier = Modifier.padding(10.dp))
-                Text(
-                    text.replaceFirstChar { it.uppercase() },
-                    Modifier.padding(10.dp),
-                    fontFamily = comicRelief,
-                    color = white
-                )
-                HorizontalDivider(thickness = 2.dp, color = grayWh, modifier = Modifier.padding(10.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start
-                ) {
-                    Icon(
-                        painterResource(
-                            R.drawable.like_border
-                        ),
-                        contentDescription = "",
-                        tint = orange,
-                        modifier = Modifier
-                            .padding(14.dp)
-                            .clickable { }
-                    )
-                    Button(
-                        onClick = {
-                            saveCurrentPostId()
-                            toCommentsScreen()
-                        },
-                        shape = RoundedCornerShape(14.dp),
-                        colors = ButtonColors(
-                            containerColor = gray,
-                            contentColor = grayDark,
-                            disabledContentColor = grayDark,
-                            disabledContainerColor = gray,
-                        ),
-                        modifier = Modifier.padding(10.dp)
-                    ) {
-                        Text(stringResource(R.string.view_comments))
-                    }
-                }
-            }
-        }
-    }
-
-}
 
 

@@ -1,11 +1,7 @@
 package com.example.youarenotalone.ui.screens.vms
 
 import android.util.Log
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -20,7 +16,7 @@ import okhttp3.Response
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
-import java.util.concurrent.TimeUnit
+
 
 data class Stories(
     val user_id: Int,
@@ -49,6 +45,100 @@ class StoriesViewModel : ViewModel() {
     var listOfStories = mutableStateListOf<Stories>()
     val client = OkHttpClient()
     var serverResponse = mutableStateOf("")
+
+
+    fun getLikes(post_id: Int, user_id: Int, callback: (Int?, List<Int>) -> Unit){
+        var json = JSONObject()
+        json.put("post_id", post_id)
+        json.put("user_id", user_id)
+
+        val requestBody = json.toString().toRequestBody("application/json".toMediaType())
+
+        val request = Request.Builder()
+            .url("https://youarenotone.onrender.com/get_likes")
+            .post(requestBody)
+            .build()
+
+        client.newCall(request).enqueue(object : Callback{
+            override fun onFailure(call: Call, e: IOException) {
+                Log.e("HTTP", "Ошибка: ${e.message}")
+                callback(-1, emptyList())
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                val body = response.body?.string()
+                val response = JSONObject(body)
+                val count = response.getInt("count")
+
+                val likedByJsonArray = response.getJSONArray("liked_by")
+                val likedBy = mutableListOf<Int>()
+                for (i in 0 until likedByJsonArray.length()) {
+                    likedBy.add(likedByJsonArray.getInt(i))
+                }
+
+                callback(count, likedBy)
+            }
+
+        })
+
+    }
+
+    fun dropLike(post_id: Int,user_id: Int){
+        var json = JSONObject()
+        json.put("post_id", post_id)
+        json.put("user_id", user_id)
+
+        val requestBody = json.toString().toRequestBody("application/json".toMediaType())
+
+        val request = Request.Builder()
+            .url("https://youarenotone.onrender.com/drop_like")
+            .post(requestBody)
+            .build()
+
+        client.newCall(request).enqueue(object : Callback{
+            override fun onFailure(call: Call, e: IOException) {
+                Log.e("HTTP", "Ошибка: ${e.message}")
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                if (response.isSuccessful) {
+                    Log.d("HTTP", "Лайк убран успешно")
+                } else {
+                    Log.e("HTTP", "Ошибка ответа: ${response.code}")
+                }
+            }
+
+        })
+    }
+
+    fun addLike(post_id: Int, user_id: Int?){
+        var json = JSONObject()
+        json.put("post_id", post_id)
+        json.put("user_id", user_id)
+
+        val requestBody = json.toString().toRequestBody("application/json".toMediaType())
+
+        val request = Request.Builder()
+            .url("https://youarenotone.onrender.com/add_like")
+            .post(requestBody)
+            .build()
+
+        client.newCall(request).enqueue(object : Callback{
+            override fun onFailure(call: Call, e: IOException) {
+                Log.e("HTTP", "Ошибка: ${e.message}")
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                if (response.isSuccessful) {
+                    Log.d("HTTP", "Лайк добавлен успешно")
+                } else {
+                    Log.e("HTTP", "Ошибка ответа: ${response.code}")
+                }
+            }
+
+        })
+    }
+
 
     fun getComments(){
         val request = Request.Builder()
