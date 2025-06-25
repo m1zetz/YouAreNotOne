@@ -77,14 +77,19 @@ import com.example.youarenotalone.ui.screens.vms.myUserId
 import com.example.youarenotalone.ui.theme.bgColor
 import com.example.youarenotalone.ui.theme.black
 import com.example.youarenotalone.ui.theme.blue
+import com.example.youarenotalone.ui.theme.buttonComments
+import com.example.youarenotalone.ui.theme.buttonText
 import com.example.youarenotalone.ui.theme.comicRelief
 import com.example.youarenotalone.ui.theme.gray
 import com.example.youarenotalone.ui.theme.grayDark
 import com.example.youarenotalone.ui.theme.grayDarkDark
 import com.example.youarenotalone.ui.theme.grayWh
+import com.example.youarenotalone.ui.theme.hordiv
+import com.example.youarenotalone.ui.theme.listOfCardColors
 import com.example.youarenotalone.ui.theme.orange
 import com.example.youarenotalone.ui.theme.pain
 import com.example.youarenotalone.ui.theme.white
+import kotlin.random.Random
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -160,7 +165,8 @@ fun Stories(navController: NavController, storiesViewModel: StoriesViewModel) {
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun Comments(storiesViewModel: StoriesViewModel) {
 
@@ -168,126 +174,150 @@ fun Comments(storiesViewModel: StoriesViewModel) {
         storiesViewModel.getComments()
     }
 
+    Scaffold(
+        topBar = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.Bottom
+            ) {
+                TopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = black,
+                        titleContentColor = orange
+                    ),
+                    title = {},
+                )
+                HorizontalDivider(color = gray, thickness = 3.dp)
+            }
 
-    Column(
-        Modifier
-            .fillMaxSize()
-            .background(grayDarkDark)
-    ) {
-        ExpandableCardForComments(
-            title = storiesViewModel.currentPostTitle.value,
-            text = storiesViewModel.currentPostText.value,
-        )
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxHeight(0.9f)
-                .fillMaxWidth()
-        ) {
+            ExpandableCardForComments(
+                title = storiesViewModel.currentPostTitle.value,
+                text = storiesViewModel.currentPostText.value,
+            )
 
-            items(storiesViewModel.comments) { comments ->
+        },
+        content = { paddingValues ->
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .background(grayDarkDark)
+            ) {
 
-                if (comments.post_id == storiesViewModel.currentPostId.value) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .fillMaxWidth()
+                        .padding()
+                ) {
 
-                    Card(
-                        shape = RoundedCornerShape(12.dp),
-                        modifier = Modifier
-                            .padding(10.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = blue
-                        )
+                    items(storiesViewModel.comments) { comments ->
 
-                    ) {
-                        Text(
-                            comments.comment,
-                            color = white,
-                            fontFamily = comicRelief,
-                            fontSize = 22.sp,
-                            modifier = Modifier
-                                .padding(5.dp)
-                        )
+                        if (comments.post_id == storiesViewModel.currentPostId.value) {
+
+                            Card(
+                                shape = RoundedCornerShape(12.dp),
+                                modifier = Modifier
+                                    .padding(10.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = blue
+                                )
+
+                            ) {
+                                Text(
+                                    comments.comment,
+                                    color = white,
+                                    fontFamily = comicRelief,
+                                    fontSize = 22.sp,
+                                    modifier = Modifier
+                                        .padding(5.dp)
+                                )
+                            }
+
+
+                        }
                     }
 
-
                 }
             }
-
-        }
-    }
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.BottomEnd
-    ) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.BottomEnd
+            ) {
 
 
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = black),
-            shape = RectangleShape
-        ) {
-            Row(verticalAlignment = Alignment.Bottom) {
-                val navBarHeight = WindowInsets.navigationBars.getBottom(LocalDensity.current)
-                OutlinedTextField(
-                    value = storiesViewModel.comment,
-                    onValueChange = { storiesViewModel.comment = it },
-                    placeholder = { Text("Enter login", color = gray) },
-                    textStyle = TextStyle(
-                        color = gray
-                    ),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = orange,
-                        unfocusedBorderColor = gray
-                    ),
-                    shape = RoundedCornerShape(15.dp),
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(bottom = IntPixelsToDp(navBarHeight))
-
-
-                )
-
-                val interactionSource = remember { MutableInteractionSource() }
-                val isPressed by interactionSource.collectIsPressedAsState()
-
-                val borderColor by animateColorAsState(
-                    targetValue = if (isPressed) orange else gray,
-                    animationSpec = tween(durationMillis = 10),
-                    label = "border color animation"
-                )
-
-                OutlinedButton(
-                    onClick = {
-                        storiesViewModel.sendComment(
-                            storiesViewModel.comment,
-                            storiesViewModel.currentPostId.value ?: -1
-                        )
-                    },
-                    shape = RoundedCornerShape(15.dp),
-                    border = BorderStroke(3.dp, borderColor),
-                    modifier = Modifier
-                        .padding(
-                            bottom = IntPixelsToDp(navBarHeight)
-                        )
-                        .background(grayDarkDark),
-                    interactionSource = interactionSource,
-                    colors = ButtonColors(
-                        containerColor = black,
-                        disabledContainerColor = black,
-                        contentColor = orange,
-                        disabledContentColor = orange
-                    )
-
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(containerColor = black),
+                    shape = RectangleShape
                 ) {
-                    Icon(
-                        Icons.Default.PlayArrow,
-                        contentDescription = "",
-                        Modifier.size(40.dp),
-                        tint = orange
-                    )
+                    Row(verticalAlignment = Alignment.Bottom) {
+                        val navBarHeight =
+                            WindowInsets.navigationBars.getBottom(LocalDensity.current)
+                        OutlinedTextField(
+                            value = storiesViewModel.comment,
+                            onValueChange = { storiesViewModel.comment = it },
+                            placeholder = { Text("Enter login", color = gray) },
+                            textStyle = TextStyle(
+                                color = gray
+                            ),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = orange,
+                                unfocusedBorderColor = gray
+                            ),
+                            shape = RoundedCornerShape(15.dp),
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(bottom = IntPixelsToDp(navBarHeight))
+
+
+                        )
+
+                        val interactionSource = remember { MutableInteractionSource() }
+                        val isPressed by interactionSource.collectIsPressedAsState()
+
+                        val borderColor by animateColorAsState(
+                            targetValue = if (isPressed) orange else gray,
+                            animationSpec = tween(durationMillis = 10),
+                            label = "border color animation"
+                        )
+
+                        OutlinedButton(
+                            onClick = {
+                                storiesViewModel.sendComment(
+                                    storiesViewModel.comment,
+                                    storiesViewModel.currentPostId.value ?: -1
+                                )
+                            },
+                            shape = RoundedCornerShape(15.dp),
+                            border = BorderStroke(3.dp, borderColor),
+                            modifier = Modifier
+                                .padding(
+                                    bottom = IntPixelsToDp(navBarHeight)
+                                )
+                                .background(grayDarkDark),
+                            interactionSource = interactionSource,
+                            colors = ButtonColors(
+                                containerColor = black,
+                                disabledContainerColor = black,
+                                contentColor = orange,
+                                disabledContentColor = orange
+                            )
+
+                        ) {
+                            Icon(
+                                Icons.Default.PlayArrow,
+                                contentDescription = "",
+                                Modifier.size(40.dp),
+                                tint = orange
+                            )
+                        }
+                    }
+
                 }
             }
-
         }
-    }
+    )
+
 
 }
 
@@ -318,6 +348,8 @@ fun ExpandableCard(
         targetValue = if (expandedState) 180f else 0f
     )
 
+    val randomIndex = Random.nextInt(0, 12)
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -331,10 +363,8 @@ fun ExpandableCard(
         shape = RoundedCornerShape(12.dp),
         onClick = {
             expandedState = !expandedState
-
-
         },
-        colors = CardDefaults.cardColors(containerColor = grayDark)
+        colors = CardDefaults.cardColors(containerColor = listOfCardColors[randomIndex])
     ) {
         Column(
             modifier = Modifier
@@ -372,7 +402,7 @@ fun ExpandableCard(
             if (expandedState) {
                 HorizontalDivider(
                     thickness = 2.dp,
-                    color = grayWh,
+                    color = hordiv,
                     modifier = Modifier.padding(10.dp)
                 )
                 Text(
@@ -383,7 +413,7 @@ fun ExpandableCard(
                 )
                 HorizontalDivider(
                     thickness = 2.dp,
-                    color = grayWh,
+                    color = hordiv,
                     modifier = Modifier.padding(10.dp)
                 )
 
@@ -403,7 +433,7 @@ fun ExpandableCard(
                     val userId = myUserId.value ?: -1
                     if (idLikesList.contains(userId)) {
                         currentIcon = likefull
-                    }else {
+                    } else {
                         currentIcon = likeBorder
                     }
 
@@ -457,14 +487,14 @@ fun ExpandableCard(
                         },
                         shape = RoundedCornerShape(10.dp),
                         colors = ButtonColors(
-                            containerColor = gray,
-                            contentColor = grayDark,
-                            disabledContentColor = grayDark,
-                            disabledContainerColor = gray,
+                            containerColor = buttonComments,
+                            contentColor = buttonText,
+                            disabledContentColor = buttonText,
+                            disabledContainerColor = buttonComments,
                         ),
                         modifier = Modifier.padding(start = 5.dp)
                     ) {
-                        Text(commentsButtonString)
+                        Text(commentsButtonString, fontFamily = comicRelief, fontSize = 14.sp)
                     }
                 }
             }
@@ -496,7 +526,7 @@ fun ExpandableCardForComments(
                     easing = LinearOutSlowInEasing
                 )
             )
-            .padding(10.dp),
+            .padding(horizontal = 10.dp, vertical = 30.dp),
         shape = RoundedCornerShape(12.dp),
         onClick = {
             expandedState = !expandedState
@@ -546,22 +576,7 @@ fun ExpandableCardForComments(
                     color = white
                 )
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start
-                ) {
-                    Icon(
-                        painterResource(
-                            R.drawable.like_border
-                        ),
-                        contentDescription = "",
-                        tint = pain,
-                        modifier = Modifier
-                            .padding(14.dp)
-                            .clickable { }
-                    )
-                }
+
             }
         }
     }
