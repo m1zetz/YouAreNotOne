@@ -18,7 +18,12 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -44,6 +49,7 @@ import com.example.youarenotalone.ui.screens.vms.myUserId
 import com.example.youarenotalone.ui.theme.YouAreNotAloneTheme
 import com.example.youarenotalone.ui.theme.black
 import com.example.youarenotalone.ui.theme.orange
+import com.example.youarenotalone.ui.theme.white
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -96,9 +102,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
         setContent {
-            YouAreNotAloneTheme {
+            var useDarkTheme by remember { mutableStateOf(false) }
+            YouAreNotAloneTheme(darkTheme = useDarkTheme) {
 
                 val context = LocalContext.current
                 val sharedPreferences =
@@ -117,7 +123,7 @@ class MainActivity : AppCompatActivity() {
                 NavHost(
                     navController = navController,
                     startDestination = signInScreen,
-                    Modifier.background(black),
+                    Modifier.background(color = black),
 
                     ) {
                     composable(

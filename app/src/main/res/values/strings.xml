@@ -16,4 +16,5 @@
     <string name="enter_login">Enter login</string>
     <string name="enter_password">Enter password</string>
     <string name="wrong">Wrong login on password</string>
+    <string name="anonymous">All stories are anonymous.</string>
 </resources>

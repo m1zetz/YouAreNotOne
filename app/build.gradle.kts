@@ -54,6 +54,8 @@ dependencies {
     implementation(libs.ads.mobile.sdk)
     implementation(libs.androidx.foundation.layout.android)
     implementation(libs.androidx.tv.material)
+    implementation(libs.androidx.animation.core.android)
+    implementation(libs.androidx.animation.core.android)
     val nav_version = "2.9.0"
     implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation(libs.androidx.core.ktx)

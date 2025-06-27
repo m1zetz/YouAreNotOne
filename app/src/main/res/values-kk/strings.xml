@@ -17,4 +17,5 @@
     <string name="enter_login">Кіруді енгізіңіз</string>
     <string name="enter_password">Құпия сөзді енгізіңіз</string>
     <string name="wrong">Қате кіру немесе құпия сөзді</string>
+    <string name="anonymous">Барлық әңгімелер анонимді.</string>
 </resources>

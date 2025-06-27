@@ -2,6 +2,10 @@ package com.example.youarenotalone.ui.screens.bottomNav.screens
 
 
 import android.annotation.SuppressLint
+import android.graphics.BlurMaskFilter
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.drawable.shapes.Shape
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
@@ -16,15 +20,19 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -42,6 +50,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
@@ -58,8 +67,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.ClipOp
+import androidx.compose.ui.graphics.DefaultShadowColor
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.drawscope.clipPath
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
@@ -72,23 +88,34 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.youarenotalone.R
 import com.example.youarenotalone.commentsScreen
+import com.example.youarenotalone.shadowCustom
 import com.example.youarenotalone.ui.screens.vms.StoriesViewModel
 import com.example.youarenotalone.ui.screens.vms.myUserId
+import com.example.youarenotalone.ui.theme.alphaBlack
+import com.example.youarenotalone.ui.theme.alphaWhiteBlue
+import com.example.youarenotalone.ui.theme.alphaWhitePink
 import com.example.youarenotalone.ui.theme.bgColor
 import com.example.youarenotalone.ui.theme.black
 import com.example.youarenotalone.ui.theme.blue
+import com.example.youarenotalone.ui.theme.blueDark
 import com.example.youarenotalone.ui.theme.buttonComments
 import com.example.youarenotalone.ui.theme.buttonText
 import com.example.youarenotalone.ui.theme.comicRelief
 import com.example.youarenotalone.ui.theme.gray
 import com.example.youarenotalone.ui.theme.grayDark
 import com.example.youarenotalone.ui.theme.grayDarkDark
+import com.example.youarenotalone.ui.theme.grayPurple
+import com.example.youarenotalone.ui.theme.grayPurpleDark
+import com.example.youarenotalone.ui.theme.grayPurpleLight
 import com.example.youarenotalone.ui.theme.grayWh
 import com.example.youarenotalone.ui.theme.hordiv
 import com.example.youarenotalone.ui.theme.listOfCardColors
 import com.example.youarenotalone.ui.theme.orange
 import com.example.youarenotalone.ui.theme.pain
+import com.example.youarenotalone.ui.theme.pinkLight
 import com.example.youarenotalone.ui.theme.white
+import com.example.youarenotalone.ui.theme.zagolovok
+import kotlin.io.path.Path
 import kotlin.random.Random
 
 
@@ -101,68 +128,85 @@ fun Stories(navController: NavController, storiesViewModel: StoriesViewModel) {
     storiesViewModel.getComments()
 
 
-    Scaffold(
-        containerColor = bgColor,
-        topBar = {
-            Column {
-                TopAppBar(
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = black,
-                        titleContentColor = orange
-                    ),
-                    title = {
-                        Box(
-                            modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(stringResource(R.string.stories), fontFamily = comicRelief)
-                        }
-                    }
-                )
+    Box(modifier = Modifier.fillMaxSize()) {
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .navigationBarsPadding(),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            contentPadding = PaddingValues(bottom = 84.dp)
+        ) {
+
+            item {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(2.dp)
-                        .background(orange)
-                )
-            }
 
-
-        },
-        content = { paddingValues ->
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = paddingValues.calculateTopPadding()),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                items(storiesViewModel.listOfStories) { card ->
-
-                    ExpandableCard(
-                        title = card.title,
-                        text = card.text,
-                        saveCurrentPostId = {
-                            storiesViewModel.currentPostTitle.value = card.title
-                            storiesViewModel.currentPostText.value = card.text
-                            storiesViewModel.currentPostId.value = card.post_id
-                        },
-                        toCommentsScreen = {
-                            navController.navigate(commentsScreen)
-                        },
-                        commentsButtonString = stringResource(R.string.help),
-                        storiesViewModel = storiesViewModel,
-                        post_id = card.post_id,
-                        user_id = card.user_id
-                    )
-
+//                        .shadowCustom(
+//                            color = black.copy(alpha = 0.3f), // Цвет тени (полупрозрачный черный)
+//                            offsetX = 0.dp, // Смещение по X (отступ вправо)
+//                            offsetY = 8.dp, // Смещение по Y (отступ вниз)
+//                            blurRadius = 25.dp, // Радиус размытия тени
+//                            shapeRadius = 0.dp // Радиус скругления для тени (0.dp для прямоугольной)
+//                        )
+                        .background(MaterialTheme.colorScheme.tertiary)
+                    ,
+                    Alignment.Center
+                ) {
+                    Column(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(start = 10.dp, bottom = 20.dp, top = 20.dp)
+                            .statusBarsPadding(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.Start
+                    ) {
+                        Text(
+                            stringResource(R.string.stories),
+                            color = MaterialTheme.colorScheme.primary,
+                            fontSize = 45.sp
+                        )
+                        Text(
+                            stringResource(R.string.anonymous),
+                            color = MaterialTheme.colorScheme.secondary,
+                            fontSize = 22.sp
+                        )
+                    }
 
                 }
+            }
+
+            items(storiesViewModel.listOfStories) { card ->
+
+                ExpandableCard(
+                    title = card.title,
+                    text = card.text,
+                    saveCurrentPostId = {
+                        storiesViewModel.currentPostTitle.value = card.title
+                        storiesViewModel.currentPostText.value = card.text
+                        storiesViewModel.currentPostId.value = card.post_id
+                    },
+                    toCommentsScreen = {
+                        navController.navigate(commentsScreen)
+                    },
+                    commentsButtonString = stringResource(R.string.help),
+                    storiesViewModel = storiesViewModel,
+                    post_id = card.post_id,
+                    user_id = card.user_id
+                )
+
 
             }
 
         }
-    )
+
+
+    }
+
+
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -360,15 +404,16 @@ fun ExpandableCard(
                 )
             )
             .padding(10.dp),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(25.dp),
         onClick = {
             expandedState = !expandedState
         },
-        colors = CardDefaults.cardColors(containerColor = listOfCardColors[randomIndex])
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(10.dp)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -380,7 +425,7 @@ fun ExpandableCard(
                     text = title.replaceFirstChar { it.uppercase() },
                     fontSize = 25.sp,
                     maxLines = 1,
-                    color = orange,
+                    color = white,
                     fontFamily = comicRelief
                 )
                 IconButton(
@@ -395,14 +440,15 @@ fun ExpandableCard(
                     Icon(
                         imageVector = Icons.Default.ArrowDropDown,
                         contentDescription = "Drop Down Arrow",
-                        tint = orange
+                        tint = MaterialTheme.colorScheme.surfaceBright,
+                        modifier = Modifier.size(50.dp)
                     )
                 }
             }
             if (expandedState) {
                 HorizontalDivider(
                     thickness = 2.dp,
-                    color = hordiv,
+                    color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.padding(10.dp)
                 )
                 Text(
@@ -413,7 +459,7 @@ fun ExpandableCard(
                 )
                 HorizontalDivider(
                     thickness = 2.dp,
-                    color = hordiv,
+                    color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.padding(10.dp)
                 )
 
@@ -440,7 +486,7 @@ fun ExpandableCard(
                     Icon(
                         currentIcon,
                         contentDescription = "",
-                        tint = pain,
+                        tint = pinkLight,
                         modifier = Modifier
                             .padding(start = 10.dp)
                             .clickable {                                                 //LIKE
@@ -477,7 +523,7 @@ fun ExpandableCard(
                         modifier = Modifier.padding(horizontal = 5.dp),
                         fontSize = 20.sp,
                         fontFamily = comicRelief,
-                        color = pain
+                        color = pinkLight
                     )
 
                     Button(
@@ -485,16 +531,16 @@ fun ExpandableCard(
                             saveCurrentPostId()
                             toCommentsScreen()
                         },
-                        shape = RoundedCornerShape(10.dp),
+                        shape = RoundedCornerShape(30.dp),
                         colors = ButtonColors(
-                            containerColor = buttonComments,
-                            contentColor = buttonText,
-                            disabledContentColor = buttonText,
-                            disabledContainerColor = buttonComments,
+                            containerColor = MaterialTheme.colorScheme.onSurface,
+                            contentColor = MaterialTheme.colorScheme.surfaceTint,
+                            disabledContentColor = MaterialTheme.colorScheme.surfaceTint,
+                            disabledContainerColor = MaterialTheme.colorScheme.onSurface,
                         ),
                         modifier = Modifier.padding(start = 5.dp)
                     ) {
-                        Text(commentsButtonString, fontFamily = comicRelief, fontSize = 14.sp)
+                        Text(commentsButtonString, fontSize = 14.sp)
                     }
                 }
             }
