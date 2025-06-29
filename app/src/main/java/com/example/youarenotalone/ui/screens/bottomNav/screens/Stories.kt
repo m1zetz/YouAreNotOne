@@ -144,14 +144,6 @@ fun Stories(navController: NavController, storiesViewModel: StoriesViewModel) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-
-//                        .shadowCustom(
-//                            color = black.copy(alpha = 0.3f), // Цвет тени (полупрозрачный черный)
-//                            offsetX = 0.dp, // Смещение по X (отступ вправо)
-//                            offsetY = 8.dp, // Смещение по Y (отступ вниз)
-//                            blurRadius = 25.dp, // Радиус размытия тени
-//                            shapeRadius = 0.dp // Радиус скругления для тени (0.dp для прямоугольной)
-//                        )
                         .background(MaterialTheme.colorScheme.tertiary)
                     ,
                     Alignment.Center

@@ -22,8 +22,10 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -104,86 +106,108 @@ import com.example.youarenotalone.ui.theme.white
 @Composable
 fun MyStories(storiesViewModel: StoriesViewModel, navController: NavController) {
     val myStoriesViewModel: MyStoriesViewModel = viewModel()
-
     myStoriesViewModel.getMyStories()
 
-    Scaffold(
-        containerColor = bgColor,
-        topBar = {
-            Column {
-                TopAppBar(
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = black,
-                        titleContentColor = orange
-                    ),
-                    title = {
-                        Box(
-                            modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(stringResource(R.string.my_stories), fontFamily = comicRelief)
-                        }
-                    }
-                )
+
+
+
+    Box(modifier = Modifier.fillMaxSize()) {
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .navigationBarsPadding(),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            contentPadding = PaddingValues(bottom = 84.dp)
+        ) {
+
+            item {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(2.dp)
-                        .background(orange)
-                )
-            }
-
-
-        },
-        content = { paddingValues ->
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = paddingValues.calculateTopPadding()),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                items(myStoriesViewModel.listOfMyStories) { card ->
-
-                    ExpandableCard(
-                        title = card.title,
-                        text = card.text,
-                        saveCurrentPostId = {
-                            storiesViewModel.currentPostTitle.value = card.title
-                            storiesViewModel.currentPostText.value = card.text
-                            storiesViewModel.currentPostId.value = card.post_id
-                        },
-                        toCommentsScreen = {
-                            navController.navigate(commentsScreen)
-                        },
-                        commentsButtonString = stringResource(R.string.view_comments),
-                        storiesViewModel = storiesViewModel,
-                        post_id = card.post_id,
-                        user_id = card.user_id
-
-                    )
+                        .background(MaterialTheme.colorScheme.tertiary)
+                    ,
+                    Alignment.Center
+                ) {
+                    Column(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(start = 10.dp, bottom = 20.dp, top = 20.dp)
+                            .statusBarsPadding(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.Start
+                    ) {
+                        Text(
+                            stringResource(R.string.my_stories),
+                            color = MaterialTheme.colorScheme.primary,
+                            fontSize = 45.sp
+                        )
+                        Text(
+                            stringResource(R.string.myStroryOnly),
+                            color = MaterialTheme.colorScheme.secondary,
+                            fontSize = 22.sp
+                        )
+                    }
 
 
                 }
 
             }
 
-        },
-        floatingActionButton = {
+            items(myStoriesViewModel.listOfMyStories) { card ->
+
+                ExpandableCard(
+                    title = card.title,
+                    text = card.text,
+                    saveCurrentPostId = {
+                        storiesViewModel.currentPostTitle.value = card.title
+                        storiesViewModel.currentPostText.value = card.text
+                        storiesViewModel.currentPostId.value = card.post_id
+                    },
+                    toCommentsScreen = {
+                        navController.navigate(commentsScreen)
+                    },
+                    commentsButtonString = stringResource(R.string.help),
+                    storiesViewModel = storiesViewModel,
+                    post_id = card.post_id,
+                    user_id = card.user_id
+                )
+
+
+            }
+
+        }
+        Column(
+            modifier = Modifier.fillMaxSize()
+                .padding(bottom = 110.dp)
+                .padding(end = 10.dp)
+                .navigationBarsPadding(),
+            verticalArrangement = Bottom,
+            horizontalAlignment = Alignment.End
+        ) {
             FloatingActionButton(
                 onClick = { myStoriesViewModel.stateOfBottomSheet.value = true },
                 shape = CircleShape,
-                modifier = Modifier.size(70.dp),
+                modifier = Modifier.size(90.dp),
                 containerColor = black
             ) {
                 Icon(
                     painter = painterResource(R.drawable.plus),
-                    tint = pain, contentDescription = "",
+                    tint = MaterialTheme.colorScheme.surfaceContainerLowest, contentDescription = "",
                     modifier = Modifier.size(30.dp)
                 )
             }
         }
-    )
+
+
+    }
+
+
+
+
+
     AddBottomSheet(myStoriesViewModel)
 }
 
@@ -311,6 +335,78 @@ fun AddBottomSheet(vmMyStories: MyStoriesViewModel) {
 
 
 }
+@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
+@Composable
+fun miFE(storiesViewModel: StoriesViewModel, navController: NavController){
+    val myStoriesViewModel: MyStoriesViewModel = viewModel()
 
+    myStoriesViewModel.getMyStories()
+    Scaffold(
+        containerColor = bgColor,
+        topBar = {
+            Column {
+                TopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = black,
+                        titleContentColor = orange
+                    ),
+                    title = {
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(stringResource(R.string.my_stories), fontFamily = comicRelief)
+                        }
+                    }
+                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(2.dp)
+                        .background(orange)
+                )
+            }
+
+
+        },
+        content = { paddingValues ->
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = paddingValues.calculateTopPadding()),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                items(myStoriesViewModel.listOfMyStories) { card ->
+
+                    ExpandableCard(
+                        title = card.title,
+                        text = card.text,
+                        saveCurrentPostId = {
+                            storiesViewModel.currentPostTitle.value = card.title
+                            storiesViewModel.currentPostText.value = card.text
+                            storiesViewModel.currentPostId.value = card.post_id
+                        },
+                        toCommentsScreen = {
+                            navController.navigate(commentsScreen)
+                        },
+                        commentsButtonString = stringResource(R.string.view_comments),
+                        storiesViewModel = storiesViewModel,
+                        post_id = card.post_id,
+                        user_id = card.user_id
+
+                    )
+
+
+                }
+
+            }
+
+        },
+        floatingActionButton = {
+
+        }
+    )
+}
 
 

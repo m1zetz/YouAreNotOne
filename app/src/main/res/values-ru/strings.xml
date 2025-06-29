@@ -18,4 +18,6 @@
     <string name="enter_password">Введите пароль</string>
     <string name="wrong">Неправильный логин или пароль</string>
     <string name="anonymous">Все истории анонимны.</string>
+    <string name="myStroryOnly">Тут только твои истории.</string>
+    <string name="app_settings">Настройки приложения</string>
 </resources>

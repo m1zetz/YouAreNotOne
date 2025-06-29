@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            var useDarkTheme by remember { mutableStateOf(false) }
+            var useDarkTheme by remember { mutableStateOf(true) }
             YouAreNotAloneTheme(darkTheme = useDarkTheme) {
 
                 val context = LocalContext.current

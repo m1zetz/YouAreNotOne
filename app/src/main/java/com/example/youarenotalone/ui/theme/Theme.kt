@@ -17,6 +17,7 @@ private val DarkColorScheme = darkColorScheme(
     secondary = pinkDark,
     tertiary = black,
     background = blueDark,
+    surfaceContainerLowest = pinkLight,
 
     surfaceContainer = grayPurple,
     onSurface = grayPurpleDark,
@@ -31,6 +32,7 @@ private val LightColorScheme = lightColorScheme(
     secondary = pinkLightLight,
     tertiary = blueLight,
     background = white,
+    surfaceContainerLowest = pinkLight,
 
     surfaceContainer = _grayPurple,
     onSurface = _grayPurpleDark,

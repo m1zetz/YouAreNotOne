@@ -185,7 +185,7 @@ fun BottomNavigationBar(
                     Icon(
                         painter = painterResource(id = item.iconId),
                         contentDescription = null,
-                        tint = if (currentScreen == index) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.background,
+                        tint = if (currentScreen == index) MaterialTheme.colorScheme.surfaceContainerLowest else MaterialTheme.colorScheme.background,
                         modifier = Modifier
                             .size(28.dp)
                             .clickable { onItemClick(index) }

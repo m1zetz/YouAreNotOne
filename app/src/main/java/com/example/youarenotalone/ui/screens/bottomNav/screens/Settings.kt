@@ -4,8 +4,10 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.util.Log
+import androidx.compose.foundation.BorderStroke
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,13 +18,21 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
@@ -40,11 +50,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.youarenotalone.R
+import com.example.youarenotalone.commentsScreen
 import com.example.youarenotalone.getSavedLanguage
 import com.example.youarenotalone.mainScreen
 import com.example.youarenotalone.setLanguage
@@ -74,79 +86,107 @@ fun Settings(
     signInViewModel: SignInViewModel,
     context: Context
 ) {
-    Scaffold(
-        containerColor = bgColor,
-        topBar = {
-            Column {
-                TopAppBar(
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = black,
-                        titleContentColor = orange
-                    ),
-                    title = {
-                        Box(
-                            modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                stringResource(R.string.settings),
-                                fontFamily = comicRelief,
-                            )
-                        }
-                    }
-                )
+    Box(modifier = Modifier.fillMaxSize()) {
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .navigationBarsPadding(),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            contentPadding = PaddingValues(bottom = 84.dp)
+        ) {
+
+            item {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(2.dp)
-                        .background(orange)
-                )
+                        .background(MaterialTheme.colorScheme.tertiary)
+                    ,
+                    Alignment.Center
+                ) {
+                    Column(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(start = 10.dp, bottom = 20.dp, top = 20.dp)
+                            .statusBarsPadding(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.Start
+                    ) {
+                        Text(
+                            stringResource(R.string.settings),
+                            color = MaterialTheme.colorScheme.primary,
+                            fontSize = 45.sp
+                        )
+                        Text(
+                            stringResource(R.string.app_settings),
+                            color = MaterialTheme.colorScheme.secondary,
+                            fontSize = 22.sp
+                        )
+                    }
+
+                }
             }
 
+            item {
+                Column(
+                    modifier = Modifier
+                        .padding()
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    val activity = LocalContext.current as? Activity
+                    Card(
+                        modifier = Modifier.padding(10.dp),
+                        shape = RoundedCornerShape(25.dp),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
+                    ){
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(10.dp)
+                        ){
+                            DropDownLanguages(activity)
 
-        },
-        content = { innerPadding ->
-            Column(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .padding(innerPadding)
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.Start
-            ) {
-                val activity = LocalContext.current as? Activity
-                DropDownLanguages(activity)
+                            Spacer(modifier = Modifier.size(10.dp))
 
-                Spacer(modifier = Modifier.size(10.dp))
+                            HorizontalDivider(
+                                thickness = 3.dp,
+                                modifier = Modifier.padding(horizontal = 10.dp),
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
 
-                HorizontalDivider(
-                    thickness = 2.dp,
-                    modifier = Modifier.padding(horizontal = 10.dp),
-                    color = grayDark
-                )
+                            Spacer(modifier = Modifier.size(10.dp))
 
-                Spacer(modifier = Modifier.size(10.dp))
-
-                Text(
-                    stringResource(R.string.exit), color = pain, modifier = Modifier
-                        .clickable {
-                            myUserId.value = -1
-                            forgotId()
-                            navController.navigate(signInScreen) {
-                                popUpTo(mainScreen) {
-                                    inclusive = true
-                                }
-                            }
+                            Text(
+                                stringResource(R.string.exit), color = pain, modifier = Modifier
+                                    .clickable {
+                                        myUserId.value = -1
+                                        forgotId()
+                                        navController.navigate(signInScreen) {
+                                            popUpTo(mainScreen) {
+                                                inclusive = true
+                                            }
+                                        }
+                                    }
+                                    .padding(horizontal = 10.dp),
+                                fontSize = 30.sp,
+                            )
                         }
-                        .padding(horizontal = 10.dp),
-                    fontSize = 30.sp,
-                    fontFamily = comicRelief
-                )
+                    }
+
+
+                }
+
 
             }
 
         }
-    )
+
+
+    }
 }
 
 @SuppressLint("UnrememberedMutableState")
@@ -164,9 +204,8 @@ fun DropDownLanguages(activity: Activity?) {
     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Text(
             "${stringResource(R.string.Language)}: ",
-            color = orange,
+            color = MaterialTheme.colorScheme.surfaceContainerLowest,
             fontSize = 20.sp,
-            fontFamily = comicRelief,
             modifier = Modifier.padding(horizontal = 10.dp)
         )
         ExposedDropdownMenuBox(
@@ -182,11 +221,12 @@ fun DropDownLanguages(activity: Activity?) {
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = settingsViewModel.expanded.value) },
                 modifier = Modifier.menuAnchor(),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = orange,
-                    unfocusedBorderColor = gray,
-                    focusedTextColor = orange,
-                    unfocusedTextColor = orange
-                )
+                    focusedBorderColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.onSurface,
+                    focusedTextColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+                    unfocusedTextColor = MaterialTheme.colorScheme.surfaceContainerLowest
+                ),
+                textStyle = TextStyle(fontSize = 20.sp)
             )
 
             ExposedDropdownMenu(
@@ -195,7 +235,7 @@ fun DropDownLanguages(activity: Activity?) {
             ) {
                 settingsViewModel.langs.forEach { item ->
                     DropdownMenuItem(
-                        text = { Text(text = item) },
+                        text = { Text(text = item, color = MaterialTheme.colorScheme.surfaceContainerLowest, fontSize = 20.sp) },
                         onClick = {
                             settingsViewModel.selectedText.value = item
                             settingsViewModel.expanded.value = false
@@ -209,16 +249,14 @@ fun DropDownLanguages(activity: Activity?) {
 
 
                             if (activity != null) {
-                                setLanguage(activity, langCode) // Устанавливаем язык
+                                setLanguage(activity, langCode)
 
-                                // *** Добавляем задержку перед recreate() ***
+
                                 coroutineScope.launch {
-                                    delay(100) // Попробуйте 100-200 мс
+                                    delay(100)
                                     activity.recreate()
 
                                 }
-                            } else {
-
                             }
                         }
                     )

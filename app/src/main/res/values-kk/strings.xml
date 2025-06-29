@@ -18,4 +18,6 @@
     <string name="enter_password">Құпия сөзді енгізіңіз</string>
     <string name="wrong">Қате кіру немесе құпия сөзді</string>
     <string name="anonymous">Барлық әңгімелер анонимді.</string>
+    <string name="myStroryOnly">Мұнда тек сіздің әңгімелеріңіз бар.</string>
+    <string name="app_settings">Қолданба параметрлері</string>
 </resources>
