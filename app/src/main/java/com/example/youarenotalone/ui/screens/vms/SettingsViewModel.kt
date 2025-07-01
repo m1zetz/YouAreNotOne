@@ -9,6 +9,11 @@ import androidx.lifecycle.ViewModel
 import com.example.youarenotalone.getSavedLanguage
 
 class SettingsViewModel : ViewModel() {
+
+    var themesBottomSheetState by mutableStateOf(false)
+    var stateOfLight by mutableStateOf(false)
+    var stateOfDark by mutableStateOf(false)
+
     val langs = arrayOf("English", "Русский", "Қазақ")
 
     var expanded = mutableStateOf(false)

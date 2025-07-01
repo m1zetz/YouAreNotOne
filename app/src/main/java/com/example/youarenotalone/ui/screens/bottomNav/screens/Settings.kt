@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.util.Log
+
 import androidx.compose.foundation.BorderStroke
 
 import androidx.compose.foundation.background
@@ -33,12 +34,17 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchColors
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -48,6 +54,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -59,18 +66,24 @@ import com.example.youarenotalone.R
 import com.example.youarenotalone.commentsScreen
 import com.example.youarenotalone.getSavedLanguage
 import com.example.youarenotalone.mainScreen
+import com.example.youarenotalone.saveTheme
 import com.example.youarenotalone.setLanguage
+import com.example.youarenotalone.setTheme
 import com.example.youarenotalone.signInScreen
 import com.example.youarenotalone.ui.screens.vms.SettingsViewModel
 import com.example.youarenotalone.ui.screens.vms.SignInViewModel
 import com.example.youarenotalone.ui.screens.vms.myUserId
 import com.example.youarenotalone.ui.theme.bgColor
 import com.example.youarenotalone.ui.theme.black
+import com.example.youarenotalone.ui.theme.checked
 import com.example.youarenotalone.ui.theme.comicRelief
 import com.example.youarenotalone.ui.theme.gray
 import com.example.youarenotalone.ui.theme.grayDark
+import com.example.youarenotalone.ui.theme.grayDarkDark
+import com.example.youarenotalone.ui.theme.grayPurpleDarkDark
 import com.example.youarenotalone.ui.theme.orange
 import com.example.youarenotalone.ui.theme.pain
+import com.example.youarenotalone.ui.theme.pinkLight
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.annotation.meta.When
@@ -84,8 +97,11 @@ fun Settings(
     paddingValues: PaddingValues,
     navController: NavController,
     signInViewModel: SignInViewModel,
-    context: Context
+    context: Context,
+    useDarkTheme: Boolean
 ) {
+
+    val settingsViewModel: SettingsViewModel = viewModel()
     Box(modifier = Modifier.fillMaxSize()) {
 
         LazyColumn(
@@ -137,7 +153,9 @@ fun Settings(
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.Start
                 ) {
-                    val activity = LocalContext.current as? Activity
+
+
+
                     Card(
                         modifier = Modifier.padding(10.dp),
                         shape = RoundedCornerShape(25.dp),
@@ -148,7 +166,29 @@ fun Settings(
                                 .fillMaxWidth()
                                 .padding(10.dp)
                         ){
+
+                            val activity = LocalContext.current as? Activity
+
                             DropDownLanguages(activity)
+
+                            Spacer(modifier = Modifier.size(10.dp))
+
+                            HorizontalDivider(
+                                thickness = 3.dp,
+                                modifier = Modifier.padding(horizontal = 10.dp),
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+
+                            Spacer(modifier = Modifier.size(10.dp))
+
+                            Text(
+                                stringResource(R.string.themes), color = pinkLight, modifier = Modifier
+                                    .clickable {
+                                        settingsViewModel.themesBottomSheetState = true
+                                    }
+                                    .padding(horizontal = 10.dp),
+                                fontSize = 30.sp,
+                            )
 
                             Spacer(modifier = Modifier.size(10.dp))
 
@@ -187,7 +227,155 @@ fun Settings(
 
 
     }
+    ThemesBottomSheet(settingsViewModel, context, useDarkTheme)
 }
+
+
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnrememberedMutableState", "ContextCastToActivity")
+@Composable
+fun ThemesBottomSheet(settingsViewModel: SettingsViewModel, context: Context, activeTheme: Boolean) {
+    val activity = LocalContext.current as? Activity
+    val sheetState = rememberModalBottomSheetState()
+
+    settingsViewModel.stateOfDark = activeTheme
+    settingsViewModel.stateOfLight = !activeTheme
+
+    if(settingsViewModel.themesBottomSheetState){
+
+        ModalBottomSheet(
+            onDismissRequest = {
+                settingsViewModel.themesBottomSheetState = false
+            },
+            sheetState = sheetState
+        ){
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(10.dp)) {
+
+                Row(modifier = Modifier.fillMaxWidth(),verticalAlignment = Alignment.CenterVertically) {
+                    Text(stringResource(R.string.light_theme),
+                        fontSize = 40.sp)
+
+                    Spacer(Modifier.size(20.dp))
+
+                    Switch(
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = grayDark,
+                            checkedTrackColor = checked,
+                            uncheckedThumbColor = grayDark,
+                            uncheckedTrackColor = grayDarkDark),
+
+                        checked = settingsViewModel.stateOfLight,
+                        onCheckedChange = { isChecked ->
+                            settingsViewModel.stateOfLight  = isChecked
+
+                            if (isChecked) {
+                                settingsViewModel.stateOfLight = true
+                                settingsViewModel.stateOfDark = false
+                                saveTheme(context, false)
+                            } else {
+
+                                if (!settingsViewModel.stateOfDark) {
+                                    settingsViewModel.stateOfLight = true
+
+                                } else { // Если Dark theme была включена, то выключаем Light theme
+                                    settingsViewModel.stateOfLight = false
+                                    saveTheme(context, true)
+                                }
+                            }
+                            activity?.recreate()
+                        },
+                        modifier = Modifier.size(40.dp)
+                    )
+                }
+
+                Spacer(Modifier.size(10.dp))
+
+                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        stringResource(R.string.dark_theme),
+                        fontSize = 40.sp
+                    )
+
+                    if (activeTheme){
+                        settingsViewModel.stateOfDark = true
+                    }
+                    else {
+                        settingsViewModel.stateOfDark = false
+                    }
+
+                    Spacer(Modifier.size(20.dp))
+
+                    Switch(
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = grayDark,
+                            checkedTrackColor = checked,
+                            uncheckedThumbColor = grayDark,
+                            uncheckedTrackColor = grayDarkDark),
+                        checked = settingsViewModel.stateOfDark,
+                        onCheckedChange = { isChecked ->
+                            if (isChecked) {
+                                settingsViewModel.stateOfDark = true
+                                settingsViewModel.stateOfLight = false
+                                saveTheme(context, true)
+                            } else {
+
+                                if (!settingsViewModel.stateOfLight) {
+                                    settingsViewModel.stateOfDark = true
+
+                                } else {
+
+                                    settingsViewModel.stateOfDark = false
+                                    saveTheme(context, false)
+                                }
+                            }
+                            activity?.recreate()
+
+
+                        },
+                        modifier = Modifier.size(40.dp)
+                    )
+                }
+
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -265,3 +453,4 @@ fun DropDownLanguages(activity: Activity?) {
         }
     }
 }
+

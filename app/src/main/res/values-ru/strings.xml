@@ -20,4 +20,7 @@
     <string name="anonymous">Все истории анонимны.</string>
     <string name="myStroryOnly">Тут только твои истории.</string>
     <string name="app_settings">Настройки приложения</string>
+    <string name="themes">Темы</string>
+    <string name="light_theme">Светлая тема</string>
+    <string name="dark_theme">Темная тема</string>
 </resources>

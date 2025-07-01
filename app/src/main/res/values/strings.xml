@@ -19,4 +19,7 @@
     <string name="anonymous">All stories are anonymous.</string>
     <string name="myStroryOnly">Only your stories are shown here.</string>
     <string name="app_settings">Application settings</string>
+    <string name="themes">Themes</string>
+    <string name="light_theme">Light theme</string>
+    <string name="dark_theme">Dark theme</string>
 </resources>

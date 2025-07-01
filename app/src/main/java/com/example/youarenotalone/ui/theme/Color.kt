@@ -52,6 +52,8 @@ val red = Color(0xFFFF5050)
 val pain = Color(0xFFFF7171)
 val bgColor = Color(0xFF151515)
 
+val checked = Color(0xFF708CA1)
+
 
 val hordiv = Color(0xFF494949)
 val buttonComments = Color(0xFF989898)

@@ -39,6 +39,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -89,7 +90,8 @@ fun BottomNavigationCompose(
     storiesViewModel: StoriesViewModel,
     signInViewModel:
     SignInViewModel,
-    context: Context
+    context: Context,
+    useDarkTheme: Boolean
 ) {
 
     val scope = rememberCoroutineScope()
@@ -118,7 +120,8 @@ fun BottomNavigationCompose(
                     paddingValues,
                     navController,
                     signInViewModel,
-                    context
+                    context,
+                    useDarkTheme
                 )
             }
         }

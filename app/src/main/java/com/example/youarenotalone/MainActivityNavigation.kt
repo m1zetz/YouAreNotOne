@@ -1,5 +1,6 @@
 package com.example.youarenotalone
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.LocaleManager
 import android.content.Context
@@ -84,6 +85,9 @@ class MainActivity : AppCompatActivity() {
             AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageCode))
 
         }
+
+
+
     }
 
 
@@ -99,14 +103,20 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            var useDarkTheme by remember { mutableStateOf(true) }
+
+            val context = LocalContext.current
+            var theme = setTheme(context)
+            var useDarkTheme by remember { mutableStateOf(theme) }
+            saveTheme(context, theme)
+
             YouAreNotAloneTheme(darkTheme = useDarkTheme) {
 
-                val context = LocalContext.current
+
                 val sharedPreferences =
                     context.getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE)
                 val editor = sharedPreferences.edit()
@@ -200,7 +210,8 @@ class MainActivity : AppCompatActivity() {
                             navController,
                             vmStories,
                             signInViewModel = signInViewModel,
-                            context = context
+                            context = context,
+                            useDarkTheme = useDarkTheme
                         )
                     }
                     composable(commentsScreen,
@@ -251,4 +262,17 @@ fun setLanguage(context: Context, languageCode: String) {
     }
     saveLanguage(context, languageCode)
 
+}
+
+
+
+
+fun saveTheme(context: Context, theme: Boolean) {
+    val sharedPreferences = context.getSharedPreferences("theme_prefs", Context.MODE_PRIVATE)
+    sharedPreferences.edit().putBoolean("theme", theme).apply()
+}
+fun setTheme(context: Context): Boolean {
+    val sharedPreferences = context.getSharedPreferences("theme_prefs", Context.MODE_PRIVATE)
+    val savedTheme = sharedPreferences.getBoolean("theme", false)
+    return savedTheme
 }

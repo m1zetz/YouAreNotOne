@@ -220,7 +220,7 @@ fun AddBottomSheet(vmMyStories: MyStoriesViewModel) {
 
     if (vmMyStories.stateOfBottomSheet.value) {
         ModalBottomSheet(
-            containerColor = grayDarkDark,
+            containerColor = MaterialTheme.colorScheme.tertiary,
             modifier = Modifier.fillMaxHeight(1f),
             sheetState = sheetState,
             onDismissRequest = { vmMyStories.stateOfBottomSheet.value = false },
@@ -234,9 +234,8 @@ fun AddBottomSheet(vmMyStories: MyStoriesViewModel) {
 
                     Text(
                         stringResource(R.string.describe),
-                        color = orange,
+                        color = MaterialTheme.colorScheme.primary,
                         fontSize = 30.sp,
-                        fontFamily = comicRelief,
                         modifier = Modifier.padding(horizontal = 10.dp)
                     )
 
@@ -254,17 +253,17 @@ fun AddBottomSheet(vmMyStories: MyStoriesViewModel) {
                                 stringResource(R.string.title),
                                 color = gray,
                                 fontSize = 20.sp,
-                                fontFamily = comicRelief
                             )
                         },
                         textStyle = TextStyle(
-                            color = gray,
+                            color = MaterialTheme.colorScheme.surfaceVariant,
                             fontSize = 20.sp,
-                            fontFamily = comicRelief
                         ),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = orange,
-                            unfocusedBorderColor = gray
+                            focusedBorderColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.onSurface,
+                            focusedTextColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+                            unfocusedTextColor = MaterialTheme.colorScheme.surfaceContainerLowest
                         ),
                         shape = RoundedCornerShape(15.dp),
                         modifier = Modifier
@@ -287,17 +286,17 @@ fun AddBottomSheet(vmMyStories: MyStoriesViewModel) {
                                 stringResource(R.string.story),
                                 color = gray,
                                 fontSize = 20.sp,
-                                fontFamily = comicRelief
                             )
                         },
                         textStyle = TextStyle(
-                            color = gray,
+                            color = MaterialTheme.colorScheme.surfaceVariant,
                             fontSize = 20.sp,
-                            fontFamily = comicRelief
                         ),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = orange,
-                            unfocusedBorderColor = gray
+                            focusedBorderColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.onSurface,
+                            focusedTextColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+                            unfocusedTextColor = MaterialTheme.colorScheme.surfaceContainerLowest
                         ),
                         shape = RoundedCornerShape(15.dp),
                         modifier = Modifier
@@ -306,7 +305,7 @@ fun AddBottomSheet(vmMyStories: MyStoriesViewModel) {
 
                     )
                     Button(
-                        colors = ButtonDefaults.buttonColors(containerColor = grayDark),
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceBright),
                         shape = CircleShape,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -320,9 +319,8 @@ fun AddBottomSheet(vmMyStories: MyStoriesViewModel) {
                         }) {
                         Text(
                             stringResource(R.string.send_story),
-                            color = gray,
+                            color = MaterialTheme.colorScheme.surfaceTint,
                             fontSize = 20.sp,
-                            fontFamily = comicRelief
                         )
                     }
 
