@@ -122,10 +122,10 @@ def drop_like():
 def get_comments():
      with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT posts, comments FROM posts_comments")
+            cur.execute("SELECT id, posts, comments FROM posts_comments")
             rows = cur.fetchall()
 
-            posts = [{"post_id": row[0], "comments": row[1]} for row in rows]
+            posts = [{"comment_id": row[0],"post_id": row[1], "comments": row[2]} for row in rows]
 
             return jsonify(posts)
 
