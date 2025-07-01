@@ -13,7 +13,58 @@ def get_connection():
 
 CORS(app)
 
-#_________________________________________Likes__________________________________________
+#_________________________________________Likes_Comments__________________________________________
+
+@app.route("/get_likes_comments", methods=["POST"])
+def get_likes():
+    with get_connection() as conn:
+
+        data = request.json
+        comment_id = data["comment_id"]
+            
+        with conn.cursor() as cur:
+            cur.execute("SELECT COUNT(*) FROM comments_likes WHERE comment_id = %s;",(comment_id,)) 
+            like_count = cur.fetchone()[0]
+            
+            cur.execute("SELECT user_id FROM comments_likes WHERE comment_id = %s;",(comment_id,))
+            liked_by = [r[0] for r in cur.fetchall()]
+
+            data = {
+                "count": like_count,
+                "liked_by": liked_by
+            }
+        
+            return jsonify(data)
+
+@app.route("/add_like_comment", methods=["POST"])
+def add_like():
+     with get_connection() as conn:
+
+        data = request.json
+        comment_id = data["comment_id"]
+        user_id = data["user_id"]
+
+        with conn.cursor() as cur:
+            cur.execute("INSERT INTO comments_likes (comment_id, user_id) VALUES (%s, %s)",
+                    (comment_id, user_id))
+            conn.commit()
+ 
+            return jsonify({"status": "ok"}), 200
+    
+@app.route("/drop_like_comment", methods=["POST"])
+def drop_like():
+    with get_connection() as conn:
+
+        data = request.json
+        comment_id = data["comment_id"]
+        user_id = data["user_id"]
+            
+        with conn.cursor() as cur:
+            cur.execute("DELETE FROM comments_likes WHERE comment_id = %s AND user_id = %s;",(comment_id,user_id))
+        
+            return jsonify({"status": "ok"}), 200
+
+#_________________________________________Likes_Posts__________________________________________
 
 @app.route("/get_likes", methods=["POST"])
 def get_likes():
