@@ -16,7 +16,7 @@ CORS(app)
 #_________________________________________Likes_Comments__________________________________________
 
 @app.route("/get_likes_comments", methods=["POST"])
-def get_likes():
+def get_likes_comments():
     with get_connection() as conn:
 
         data = request.json
@@ -37,7 +37,7 @@ def get_likes():
             return jsonify(data)
 
 @app.route("/add_like_comment", methods=["POST"])
-def add_like():
+def add_like_comment():
      with get_connection() as conn:
 
         data = request.json
@@ -52,7 +52,7 @@ def add_like():
             return jsonify({"status": "ok"}), 200
     
 @app.route("/drop_like_comment", methods=["POST"])
-def drop_like():
+def drop_like_comment():
     with get_connection() as conn:
 
         data = request.json
