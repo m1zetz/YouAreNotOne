@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
@@ -63,6 +64,7 @@ import com.example.youarenotalone.ui.theme.hunninFontFamily
 import com.example.youarenotalone.ui.theme.listOfColorsSlogan
 import com.example.youarenotalone.ui.theme.orange
 import com.example.youarenotalone.ui.theme.red
+import com.example.youarenotalone.ui.theme.white
 import kotlinx.coroutines.delay
 import kotlin.math.tan
 
@@ -73,10 +75,6 @@ fun ScreenSignIn(
     toMain: () -> Unit,
     sharedPreferences: SharedPreferences
 ) {
-
-
-
-
 
     var tryLogin by remember { mutableStateOf(false) }
     var wrong by remember { mutableStateOf(false) }
@@ -157,10 +155,10 @@ fun ScreenSignIn(
                 if (wrong) wrong = false},
             placeholder = { Text(stringResource(R.string.enter_login), color = gray) },
             textStyle = TextStyle(
-                color = gray
+                color = white
             ),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = orange,
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
                 unfocusedBorderColor = gray
             ),
             shape = RoundedCornerShape(15.dp)
@@ -175,10 +173,10 @@ fun ScreenSignIn(
                 if (wrong) wrong = false},
             placeholder = { Text(stringResource(R.string.enter_password), color = gray) },
             textStyle = TextStyle(
-                color = gray
+                color = white
             ),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = orange,
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
                 unfocusedBorderColor = gray
             ),
             shape = RoundedCornerShape(15.dp)
@@ -189,7 +187,7 @@ fun ScreenSignIn(
         Text(
             stringResource(R.string.signin),
             Modifier.clickable {tryLogin = true},
-            color = orange,
+            color = MaterialTheme.colorScheme.primary,
             fontFamily = comicRelief
         )
 
@@ -198,7 +196,7 @@ fun ScreenSignIn(
         Text(
             stringResource(R.string.signup),
             Modifier.clickable { toSignUp() },
-            color = orange,
+            color = MaterialTheme.colorScheme.primary,
             fontFamily = comicRelief
         )
     }

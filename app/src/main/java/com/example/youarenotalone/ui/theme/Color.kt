@@ -11,7 +11,7 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 
-val pinkLightLight = Color(0xFFFFFFFF)
+val pinkLightLight = Color(0xFFF6BCFF)
 val pinkLight = Color(0xFFF6BCFF)
 val pinkDark = Color(0xFFB087B9)
 val black = Color.Black
@@ -47,7 +47,7 @@ val blue = Color(0xFF567C7C)
 
 
 val orange = Color(0xFFFFA865)
-val listOfColorsSlogan = listOf<Color>(orange, white)
+val listOfColorsSlogan = listOf<Color>(pinkLight, white)
 val gray = Color(0xFF7A7A7A)
 val grayDark = Color(0xFF5D5D5D)
 val grayWh = Color(0xFF727272)

@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
@@ -43,6 +44,7 @@ import com.example.youarenotalone.ui.theme.gray
 import com.example.youarenotalone.ui.theme.hunninFontFamily
 import com.example.youarenotalone.ui.theme.listOfColorsSlogan
 import com.example.youarenotalone.ui.theme.orange
+import com.example.youarenotalone.ui.theme.white
 
 @Composable
 fun ScreenSignUp(
@@ -78,10 +80,10 @@ fun ScreenSignUp(
             onValueChange = { signUpViewModel.messageLogin.value = it },
             placeholder = { Text(stringResource(R.string.enter_login), color = gray) },
             textStyle = TextStyle(
-                color = gray
+                color = white
             ),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = orange,
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
                 unfocusedBorderColor = gray
             ),
             shape = RoundedCornerShape(15.dp)
@@ -95,10 +97,10 @@ fun ScreenSignUp(
             onValueChange = { signUpViewModel.messagePassword.value = it },
             placeholder = { Text(stringResource(R.string.enter_password), color = gray) },
             textStyle = TextStyle(
-                color = gray
+                color = white
             ),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = orange,
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
                 unfocusedBorderColor = gray
             ),
             shape = RoundedCornerShape(15.dp)
@@ -109,7 +111,7 @@ fun ScreenSignUp(
         Text(
             stringResource(R.string.signup),
             Modifier.clickable { register() },
-            color = orange,
+            color = MaterialTheme.colorScheme.primary,
             fontFamily = comicRelief
         )
 
@@ -118,7 +120,7 @@ fun ScreenSignUp(
         Text(
             stringResource(R.string.signin),
             Modifier.clickable { toSignIn() },
-            color = orange,
+            color = MaterialTheme.colorScheme.primary,
             fontFamily = comicRelief
         )
     }
