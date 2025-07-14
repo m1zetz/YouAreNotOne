@@ -144,8 +144,7 @@ fun Stories(navController: NavController, storiesViewModel: StoriesViewModel) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.tertiary)
-                    ,
+                        .background(MaterialTheme.colorScheme.tertiary),
                     Alignment.Center
                 ) {
                     Column(
@@ -201,161 +200,7 @@ fun Stories(navController: NavController, storiesViewModel: StoriesViewModel) {
 
 }
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
-@Composable
-fun Comments(storiesViewModel: StoriesViewModel) {
 
-    LaunchedEffect(Unit) {
-        storiesViewModel.getComments()
-    }
-
-    Scaffold(
-        topBar = {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.Bottom
-            ) {
-                TopAppBar(
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = black,
-                        titleContentColor = orange
-                    ),
-                    title = {},
-                )
-                HorizontalDivider(color = gray, thickness = 3.dp)
-            }
-
-            ExpandableCardForComments(
-                title = storiesViewModel.currentPostTitle.value,
-                text = storiesViewModel.currentPostText.value,
-            )
-
-        },
-        content = { paddingValues ->
-            Column(
-                Modifier
-                    .fillMaxSize()
-                    .background(grayDarkDark)
-            ) {
-
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .fillMaxWidth()
-                        .padding()
-                ) {
-
-                    items(storiesViewModel.comments) { comments ->
-
-                        if (comments.post_id == storiesViewModel.currentPostId.value) {
-
-                            Card(
-                                shape = RoundedCornerShape(12.dp),
-                                modifier = Modifier
-                                    .padding(10.dp),
-                                colors = CardDefaults.cardColors(
-                                    containerColor = blue
-                                )
-
-                            ) {
-                                Text(
-                                    comments.comment,
-                                    color = white,
-                                    fontFamily = comicRelief,
-                                    fontSize = 22.sp,
-                                    modifier = Modifier
-                                        .padding(5.dp)
-                                )
-                            }
-
-
-                        }
-                    }
-
-                }
-            }
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.BottomEnd
-            ) {
-
-
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = black),
-                    shape = RectangleShape
-                ) {
-                    Row(verticalAlignment = Alignment.Bottom) {
-                        val navBarHeight =
-                            WindowInsets.navigationBars.getBottom(LocalDensity.current)
-                        OutlinedTextField(
-                            value = storiesViewModel.comment,
-                            onValueChange = { storiesViewModel.comment = it },
-                            placeholder = { Text("Enter login", color = gray) },
-                            textStyle = TextStyle(
-                                color = gray
-                            ),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = orange,
-                                unfocusedBorderColor = gray
-                            ),
-                            shape = RoundedCornerShape(15.dp),
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(bottom = IntPixelsToDp(navBarHeight))
-
-
-                        )
-
-                        val interactionSource = remember { MutableInteractionSource() }
-                        val isPressed by interactionSource.collectIsPressedAsState()
-
-                        val borderColor by animateColorAsState(
-                            targetValue = if (isPressed) orange else gray,
-                            animationSpec = tween(durationMillis = 10),
-                            label = "border color animation"
-                        )
-
-                        OutlinedButton(
-                            onClick = {
-                                storiesViewModel.sendComment(
-                                    storiesViewModel.comment,
-                                    storiesViewModel.currentPostId.value ?: -1
-                                )
-                            },
-                            shape = RoundedCornerShape(15.dp),
-                            border = BorderStroke(3.dp, borderColor),
-                            modifier = Modifier
-                                .padding(
-                                    bottom = IntPixelsToDp(navBarHeight)
-                                )
-                                .background(grayDarkDark),
-                            interactionSource = interactionSource,
-                            colors = ButtonColors(
-                                containerColor = black,
-                                disabledContainerColor = black,
-                                contentColor = orange,
-                                disabledContentColor = orange
-                            )
-
-                        ) {
-                            Icon(
-                                Icons.Default.PlayArrow,
-                                contentDescription = "",
-                                Modifier.size(40.dp),
-                                tint = orange
-                            )
-                        }
-                    }
-
-                }
-            }
-        }
-    )
-
-
-}
 
 @Composable
 fun IntPixelsToDp(px: Int): Dp {
@@ -384,7 +229,6 @@ fun ExpandableCard(
         targetValue = if (expandedState) 180f else 0f
     )
 
-    val randomIndex = Random.nextInt(0, 12)
 
     Card(
         modifier = Modifier
@@ -508,8 +352,8 @@ fun ExpandableCard(
 
                     Text(
                         text = when (likes) {
-                            null -> "Загрузка..."
-                            -1 -> "Ошибка"
+                            null -> "0"
+                            -1 -> "0"
                             else -> likes.toString()
                         },
                         modifier = Modifier.padding(horizontal = 5.dp),
@@ -555,6 +399,7 @@ fun ExpandableCardForComments(
         targetValue = if (expandedState) 180f else 0f
     )
 
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -564,18 +409,17 @@ fun ExpandableCardForComments(
                     easing = LinearOutSlowInEasing
                 )
             )
-            .padding(horizontal = 10.dp, vertical = 30.dp),
-        shape = RoundedCornerShape(12.dp),
+            .padding(10.dp),
+        shape = RoundedCornerShape(25.dp),
         onClick = {
             expandedState = !expandedState
-
-
         },
-        colors = CardDefaults.cardColors(containerColor = grayDark)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(10.dp)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -587,7 +431,7 @@ fun ExpandableCardForComments(
                     text = title.replaceFirstChar { it.uppercase() },
                     fontSize = 25.sp,
                     maxLines = 1,
-                    color = orange,
+                    color = white,
                     fontFamily = comicRelief
                 )
                 IconButton(
@@ -602,18 +446,28 @@ fun ExpandableCardForComments(
                     Icon(
                         imageVector = Icons.Default.ArrowDropDown,
                         contentDescription = "Drop Down Arrow",
-                        tint = orange
+                        tint = MaterialTheme.colorScheme.surfaceBright,
+                        modifier = Modifier.size(50.dp)
                     )
                 }
             }
             if (expandedState) {
+                HorizontalDivider(
+                    thickness = 2.dp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.padding(10.dp)
+                )
                 Text(
                     text.replaceFirstChar { it.uppercase() },
                     Modifier.padding(10.dp),
                     fontFamily = comicRelief,
                     color = white
                 )
-
+                HorizontalDivider(
+                    thickness = 2.dp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.padding(10.dp)
+                )
 
             }
         }

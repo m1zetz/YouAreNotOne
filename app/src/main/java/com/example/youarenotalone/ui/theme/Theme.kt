@@ -23,7 +23,11 @@ private val DarkColorScheme = darkColorScheme(
     onSurface = grayPurpleDark,
     surfaceVariant = white,
     surfaceTint = grayPurpleLight,
-    surfaceBright = grayPurpleDarkDark
+    surfaceBright = grayPurpleDarkDark,
+    //фон для комментов
+    onSecondary = grayGrayPurple,
+    //фон для экрана комментов
+    surfaceContainerLow = blueDarkDark
 
 )
 
@@ -38,7 +42,12 @@ private val LightColorScheme = lightColorScheme(
     onSurface = _grayPurpleDark,
     surfaceVariant = white,
     surfaceTint = _grayPurpleLight,
-    surfaceBright = _grayPurpleDarkDark
+    surfaceBright = _grayPurpleDarkDark,
+
+    onSecondary = _graygrayPurple,
+    surfaceContainerLow = _white
+
+
 
 )
 

@@ -124,6 +124,12 @@ class MainActivity : AppCompatActivity() {
                 if (myUserId.value!! < 0) {
                     loadId(sharedPreferences)
                 }
+                var screenStartDestination = signInScreen
+
+                if(myUserId.value!! != -1){
+                    screenStartDestination = mainScreen
+                }
+
 
 
                 val signInViewModel: SignInViewModel = viewModel()
@@ -132,7 +138,7 @@ class MainActivity : AppCompatActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = signInScreen,
+                    startDestination = screenStartDestination,
                     Modifier.background(color = black),
 
                     ) {

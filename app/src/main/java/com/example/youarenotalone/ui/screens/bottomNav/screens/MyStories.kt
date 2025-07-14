@@ -191,7 +191,7 @@ fun MyStories(storiesViewModel: StoriesViewModel, navController: NavController) 
                 onClick = { myStoriesViewModel.stateOfBottomSheet.value = true },
                 shape = CircleShape,
                 modifier = Modifier.size(90.dp),
-                containerColor = black
+                containerColor = MaterialTheme.colorScheme.tertiary
             ) {
                 Icon(
                     painter = painterResource(R.drawable.plus),

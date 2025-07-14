@@ -26,6 +26,7 @@ data class Stories(
 )
 
 data class Comments(
+    val comment_id: Int,
     val post_id: Int,
     val comment: String,
 )
@@ -46,7 +47,105 @@ class StoriesViewModel : ViewModel() {
     val client = OkHttpClient()
     var serverResponse = mutableStateOf("")
 
+    //-----------------------------------LIKES COMMENTS_________________
 
+
+    fun getLikesComments(comment_id: Int, user_id: Int, callback: (Int?, List<Int>) -> Unit){
+        var json = JSONObject()
+        json.put("comment_id", comment_id)
+        json.put("user_id", user_id)
+
+        val requestBody = json.toString().toRequestBody("application/json".toMediaType())
+
+        val request = Request.Builder()
+            .url("https://youarenotone.onrender.com/get_likes_comments")
+            .post(requestBody)
+            .build()
+
+        client.newCall(request).enqueue(object : Callback{
+            override fun onFailure(call: Call, e: IOException) {
+                Log.e("HTTP", "Ошибка: ${e.message}")
+                callback(-1, emptyList())
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                val body = response.body?.string()
+                val response = JSONObject(body)
+                val count = response.getInt("count")
+
+                val likedByJsonArray = response.getJSONArray("liked_by")
+                val likedBy = mutableListOf<Int>()
+                for (i in 0 until likedByJsonArray.length()) {
+                    likedBy.add(likedByJsonArray.getInt(i))
+                }
+
+                callback(count, likedBy)
+            }
+
+        })
+
+    }
+
+    fun dropLikeComment(comment_id: Int,user_id: Int){
+        var json = JSONObject()
+        json.put("comment_id", comment_id)
+        json.put("user_id", user_id)
+
+        val requestBody = json.toString().toRequestBody("application/json".toMediaType())
+
+        val request = Request.Builder()
+            .url("https://youarenotone.onrender.com/drop_like_comment")
+            .post(requestBody)
+            .build()
+
+        client.newCall(request).enqueue(object : Callback{
+            override fun onFailure(call: Call, e: IOException) {
+                Log.e("HTTP", "Ошибка: ${e.message}")
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                if (response.isSuccessful) {
+                    Log.d("HTTP", "Лайк убран успешно")
+                } else {
+                    Log.e("HTTP", "Ошибка ответа: ${response.code}")
+                }
+            }
+
+        })
+    }
+
+    fun addLikeComment(comment_id: Int, user_id: Int?){
+        var json = JSONObject()
+        json.put("comment_id", comment_id)
+        json.put("user_id", user_id)
+
+        val requestBody = json.toString().toRequestBody("application/json".toMediaType())
+
+        val request = Request.Builder()
+            .url("https://youarenotone.onrender.com/add_like_comment")
+            .post(requestBody)
+            .build()
+
+        client.newCall(request).enqueue(object : Callback{
+            override fun onFailure(call: Call, e: IOException) {
+                Log.e("HTTP", "Ошибка: ${e.message}")
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                if (response.isSuccessful) {
+                    Log.d("HTTP", "Лайк добавлен успешно")
+                } else {
+                    Log.e("HTTP", "Ошибка ответа: ${response.code}")
+                }
+            }
+
+        })
+    }
+
+
+
+
+    // --------------------------------LIKES POSTS___________________
     fun getLikes(post_id: Int, user_id: Int, callback: (Int?, List<Int>) -> Unit){
         var json = JSONObject()
         json.put("post_id", post_id)
@@ -162,11 +261,13 @@ class StoriesViewModel : ViewModel() {
                         for (i in 0 until jsonArray.length()) {
                             val item = jsonArray.getJSONObject(i)
 
+                            val comment_id = item.getInt("comment_id")
                             val post_id = item.getInt("post_id")
                             val comment = item.getString("comments")
 
                             comments.add(
                                 Comments(
+                                    comment_id = comment_id,
                                     post_id = post_id,
                                     comment = comment
                                 )

@@ -16,15 +16,19 @@ val pinkLight = Color(0xFFF6BCFF)
 val pinkDark = Color(0xFFB087B9)
 val black = Color.Black
 val white = Color.White
+val _white = Color(0xFFDEDEDE)
 val blueDark = Color(0xFF849AB6)
+val blueDarkDark = Color(0xFF6B7C93)
 val grayPurpleLight = Color(0xFF9A9CC0)
 val grayPurple = Color(0xFF696B81)
+val grayGrayPurple = Color(0xFF545667)
 val grayPurpleDark = Color(0xFF5E6275)
 val grayPurpleDarkDark = Color(0xFF424552)
 
 
 val _grayPurpleLight = Color(0xFFB9BCE5)
 val _grayPurple = Color(0xFF979AB7)
+val _graygrayPurple = Color(0xFF82859D)
 val _grayPurpleDark = Color(0xFF8289A2)
 val _grayPurpleDarkDark = Color(0xFF5B5E70)
 
