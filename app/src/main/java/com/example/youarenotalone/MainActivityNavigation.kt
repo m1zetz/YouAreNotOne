@@ -38,6 +38,7 @@ import androidx.navigation.compose.rememberNavController
 
 import com.example.youarenotalone.ui.screens.ScreenSignIn
 import com.example.youarenotalone.ui.screens.ScreenSignUp
+import com.example.youarenotalone.ui.screens.bottomNav.BottomNavViewModel
 import com.example.youarenotalone.ui.screens.bottomNav.BottomNavigationCompose
 import com.example.youarenotalone.ui.screens.bottomNav.screens.Comments
 import com.example.youarenotalone.ui.screens.bottomNav.screens.ExpandableCard
@@ -211,13 +212,15 @@ class MainActivity : AppCompatActivity() {
                             )
 
                         }) {
+                        val bottomNavViewModel: BottomNavViewModel = viewModel()
                         BottomNavigationCompose(
                             forgotId = { forgetId(editor) },
                             navController,
                             vmStories,
                             signInViewModel = signInViewModel,
                             context = context,
-                            useDarkTheme = useDarkTheme
+                            useDarkTheme = useDarkTheme,
+                            bottomNavViewModel = bottomNavViewModel
                         )
                     }
                     composable(commentsScreen,
