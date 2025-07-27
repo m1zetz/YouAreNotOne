@@ -3,6 +3,7 @@ package com.example.youarenotalone.ui.screens.bottomNav
 import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateOffsetAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,6 +25,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -47,6 +49,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.navigation.NavController
 import com.example.youarenotalone.ui.screens.vms.SignInViewModel
 import com.example.youarenotalone.ui.screens.vms.StoriesViewModel
+import com.example.youarenotalone.ui.theme.transparentWhite
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -68,6 +71,7 @@ fun BottomNavigationCompose(
     val offset = bottomNavViewModel.currentOffset.collectAsState()
     val currentBottomItem = bottomNavViewModel.currentBottomItem.collectAsState()
     val isCoordinatesLoaded = bottomNavViewModel.isCoordinatesLoaded.collectAsState()
+    val firstOffset = bottomNavViewModel.currentFirstOffset.collectAsState()
 
     val scope = rememberCoroutineScope()
     val pageState = rememberPagerState()
@@ -110,12 +114,13 @@ fun BottomNavigationCompose(
                 items = listItems,
                 isCoordinatesLoaded = isCoordinatesLoaded.value,
                 bottomNavViewModel = bottomNavViewModel,
-                offset = offset.value ?: Offset.Zero,
+                offset = offset.value?: Offset.Zero,
                 onItemClick = { index ->
                     scope.launch {
                         pageState.animateScrollToPage(index)
                     }
-                }
+                },
+                firstOffset = firstOffset.value?: Offset.Zero
             )
 
 
@@ -141,17 +146,20 @@ fun BottomNavigationBar(
     onItemClick: (Int) -> Unit,
     isCoordinatesLoaded: Boolean,
     bottomNavViewModel: BottomNavViewModel,
-    offset: Offset
+    offset: Offset,
+    firstOffset: Offset
 ) {
     val density = LocalDensity.current
 
     Box(
         modifier = Modifier.fillMaxSize(),
-    ){
+    ) {
 
 
-        Box(modifier = Modifier.fillMaxSize(),
-            Alignment.BottomStart){
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            Alignment.BottomStart
+        ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -161,24 +169,34 @@ fun BottomNavigationBar(
                     .clip(RoundedCornerShape(30.dp))
                     .background(MaterialTheme.colorScheme.tertiary),
             ) {
+                var animateOffset: State<Offset>
+                if (firstOffset != Offset.Zero) {
+                    if (offset != null){
+                        animateOffset = animateOffsetAsState(
+                            targetValue = offset,
+                            animationSpec = tween(300)
+                        )
+                    }
+                    else{
+                        animateOffset = animateOffsetAsState(
+                            targetValue = firstOffset,
+                            animationSpec = tween(300)
+                        )
+                    }
 
-                if (isCoordinatesLoaded) {
-                    val target = with(density) { offset.x.toDp() }
-
-                    val animateOffset = animateDpAsState(
-                        targetValue = target,
-                        animationSpec = tween(300)
-                    )
 
 
                     Box(
                         Modifier
-                            .offset(animateOffset.value)
+                            .offset(
+                                x = with(density) { animateOffset.value.x.toDp() - 11.dp },
+                                y = 17.dp
+                            )
                             .size(50.dp)
                             .clip(
                                 shape = RoundedCornerShape(25.dp)
                             )
-                            .background(Color.White)
+                            .background(transparentWhite)
                     )
                 }
 
@@ -205,9 +223,13 @@ fun BottomNavigationBar(
                                 modifier = Modifier
                                     .size(28.dp)
                                     .onGloballyPositioned { coordinates ->
+                                        if (!isCoordinatesLoaded && index == 0){
+                                            bottomNavViewModel.changeFirstButtonOffset(coordinates.positionInParent())
+                                        }
                                         if (currentScreen == index) {
                                             bottomNavViewModel.changeOffset(coordinates.positionInParent())
                                         }
+
                                     }
                                     .clickable {
                                         onItemClick(index)
@@ -226,7 +248,6 @@ fun BottomNavigationBar(
         }
 
     }
-
 
 
 }

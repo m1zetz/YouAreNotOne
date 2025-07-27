@@ -18,8 +18,14 @@ class BottomNavViewModel : ViewModel() {
     private var _currentOffset = MutableStateFlow<Offset?>(null)
     var currentOffset = _currentOffset.asStateFlow()
 
+    private var _currentFirstOffset = MutableStateFlow<Offset?>(null)
+    var currentFirstOffset = _currentFirstOffset.asStateFlow()
+
     fun changeOffset(coordinates: Offset){
         _currentOffset.value = coordinates
+    }
+    fun changeFirstButtonOffset(coordinates: Offset){
+        _currentFirstOffset.value = coordinates
     }
 
     private var _currentBottomItem = MutableStateFlow(Screens.STORIES)

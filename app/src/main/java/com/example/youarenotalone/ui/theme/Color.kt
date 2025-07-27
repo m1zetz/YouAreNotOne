@@ -34,7 +34,7 @@ val _grayPurpleDarkDark = Color(0xFF5B5E70)
 
 
 val blueLight = Color(0xFF9FB3E7)
-
+val transparentWhite = Color(0x48FFFFFF)
 
 
 
