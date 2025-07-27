@@ -16,6 +16,7 @@ adsMobileSdk = "0.17.0-alpha01"
 foundationLayoutAndroid = "1.7.2"
 tvMaterial = "1.0.0"
 animationCoreAndroid = "1.7.2"
+foundationAndroid = "1.7.2"
 
 [libraries]
 androidx-compose-bom-v20240600 = { module = "androidx.compose:compose-bom", version.ref = "composeBomVersion" }
@@ -40,6 +41,7 @@ ads-mobile-sdk = { group = "com.google.android.libraries.ads.mobile.sdk", name =
 androidx-foundation-layout-android = { group = "androidx.compose.foundation", name = "foundation-layout-android", version.ref = "foundationLayoutAndroid" }
 androidx-tv-material = { group = "androidx.tv", name = "tv-material", version.ref = "tvMaterial" }
 androidx-animation-core-android = { group = "androidx.compose.animation", name = "animation-core-android", version.ref = "animationCoreAndroid" }
+androidx-foundation-android = { group = "androidx.compose.foundation", name = "foundation-android", version.ref = "foundationAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

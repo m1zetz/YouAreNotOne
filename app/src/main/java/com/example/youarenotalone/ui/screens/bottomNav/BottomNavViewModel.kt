@@ -1,6 +1,8 @@
 package com.example.youarenotalone.ui.screens.bottomNav
 
 import android.util.Log
+import androidx.compose.foundation.interaction.InteractionSource
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.layout.positionInWindow
 import androidx.lifecycle.ViewModel
@@ -14,6 +16,8 @@ class BottomNavViewModel : ViewModel() {
         MY_STORIES,
         SETTINGS
     }
+
+    val interactionSourceInternal = MutableInteractionSource()
 
     private var _currentOffset = MutableStateFlow<Offset?>(null)
     var currentOffset = _currentOffset.asStateFlow()

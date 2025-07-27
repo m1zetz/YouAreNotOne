@@ -7,6 +7,8 @@ import androidx.compose.animation.core.animateOffsetAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.Interaction
+import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -53,6 +55,7 @@ import com.example.youarenotalone.ui.theme.transparentWhite
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 
@@ -147,7 +150,7 @@ fun BottomNavigationBar(
     isCoordinatesLoaded: Boolean,
     bottomNavViewModel: BottomNavViewModel,
     offset: Offset,
-    firstOffset: Offset
+    firstOffset: Offset,
 ) {
     val density = LocalDensity.current
 
@@ -231,7 +234,10 @@ fun BottomNavigationBar(
                                         }
 
                                     }
-                                    .clickable {
+                                    .clickable(
+                                        interactionSource = bottomNavViewModel.interactionSourceInternal,
+                                        indication = null
+                                    ) {
                                         onItemClick(index)
                                         bottomNavViewModel.changeCurrentBottomItem(item.screenState)
                                         bottomNavViewModel.changeIsLoadedOnTrue()
