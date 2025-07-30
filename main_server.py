@@ -12,7 +12,7 @@ def get_connection():
     return psycopg2.connect(DATABASE_URL)
 
 CORS(app)
-
+#
 #_________________________________________Likes_Comments__________________________________________
 
 @app.route("/get_likes_comments", methods=["POST"])
