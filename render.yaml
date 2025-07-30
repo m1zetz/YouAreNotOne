@@ -6,4 +6,4 @@ services:
     startCommand: "python main_server.py"
     envVars:
       - key: DATABASE_URL
-        value: postgresql://username:password@host:5432/dbname  # заменишь своей ссылкой от Neon
+        value: postgresql://neondb_owner:npg_FUqQJ7C3MKyN@ep-super-math-a91968rn-pooler.gwc.azure.neon.tech/neondb?sslmode=require

@@ -6,7 +6,7 @@ import os
 
 app = Flask(__name__)
 
-DATABASE_URL = "postgresql://neondb_owner:npg_FUqQJ7C3MKyN@ep-super-math-a91968rn-pooler.gwc.azure.neon.tech/neondb?sslmode=require"
+DATABASE_URL = os.environ.get("DATABASE_URL")
 
 def get_connection():
     return psycopg2.connect(DATABASE_URL)
