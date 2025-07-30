@@ -198,6 +198,10 @@ def register():
 
     return jsonify({"status": "registered"})
 
+@app.route('/')
+def home():
+    return jsonify({"status": "API is running", "version": "1.0"})
+
 @app.route("/login", methods=["POST"])
 def login():
     data = request.json
