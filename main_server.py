@@ -7,7 +7,7 @@ import traceback
 
 app = Flask(__name__)
 
-DATABASE_URL = os.environ.get("DATABASE_URL")
+DATABASE_URL = 'postgresql://neondb_owner:npg_FUqQJ7C3MKyN@ep-shiny-pond-a9u9rdyo-pooler.gwc.azure.neon.tech/neondb?sslmode=require&channel_binding=require'
 
 def get_connection():
     return psycopg2.connect(DATABASE_URL)
@@ -227,6 +227,5 @@ def login():
 
 #_____________________________________Main______________________________________________
 
-# if __name__ == "__main__":
-#     port = int(os.environ.get("PORT", 5000))
-#     app.run(host="0.0.0.0", port=port)
+if __name__ == "__main__":
+    app.run(debug=true)
