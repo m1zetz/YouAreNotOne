@@ -222,7 +222,7 @@ def register():
 
 @app.route('/')
 def home():
-    return jsonify({"status": "API is running", "version": "1.0"})
+    return "Косаточка - моя вечная любовь."
 
 @app.route("/login", methods=["POST"])
 def login():
