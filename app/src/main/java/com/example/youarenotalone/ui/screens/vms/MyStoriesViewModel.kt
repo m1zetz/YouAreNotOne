@@ -66,6 +66,25 @@ class MyStoriesViewModel : ViewModel() {
 
     }
 
+    fun drop_my_story(post_id: Int){
+        val json = JSONObject()
+        json.put("post_id", post_id)
+        val requestBody = json.toString().toRequestBody("application/json".toMediaType())
+        val request = Request.Builder()
+                .url("https://youarenotone.onrender.com/drop_post")
+            .post(requestBody)
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                Log.e("HTTP", "Ошибка: ${e.message}")
+            }
+            override fun onResponse(call: Call, response: Response) {
+                Log.d("HTTP", "Успех: ${response.code}")
+            }
+        })
+    }
+
     fun getMyStories() {
         val request = Request.Builder()
             .url("https://youarenotone.onrender.com/get_all_posts")

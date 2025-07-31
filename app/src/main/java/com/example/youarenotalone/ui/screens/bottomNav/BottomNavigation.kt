@@ -177,13 +177,13 @@ fun BottomNavigationBar(
                     if (offset != null){
                         animateOffset = animateOffsetAsState(
                             targetValue = offset,
-                            animationSpec = tween(300)
+                            animationSpec = tween(100)
                         )
                     }
                     else{
                         animateOffset = animateOffsetAsState(
                             targetValue = firstOffset,
-                            animationSpec = tween(300)
+                            animationSpec = tween(180)
                         )
                     }
 
