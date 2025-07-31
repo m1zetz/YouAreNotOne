@@ -193,10 +193,10 @@ def drop_post():
             with conn.cursor() as cur:
                 cur.execute(
                     "DELETE FROM posts WHERE id = %s",
-                    (post_id)
+                    (post_id,)
                 )
                 conn.commit()
-        print("удаление поста с айди " + post_id,)
+        print("удаление поста с айди " + post_id)
         return jsonify({"status": "ok"}), 200
 
     except Exception as e:
