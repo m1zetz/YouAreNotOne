@@ -180,6 +180,28 @@ def add_post():
     except Exception as e:
         traceback.print_exc()
         return jsonify({"error": "internal server error"}), 500
+    
+
+@app.route("/drop_post", methods=["POST"])
+def drop_post():
+    try:
+        data = request.json
+
+        post_id = data["post_id"]
+
+        with get_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "DELETE FROM posts WHERE id = %s",
+                    (post_id)
+                )
+                conn.commit()
+
+        return jsonify({"status": "ok"}), 200
+
+    except Exception as e:
+        traceback.print_exc()
+        return jsonify({"error": "internal server error"}), 500
 
 #_______________________________________Login____________________________________________
 
