@@ -196,7 +196,7 @@ def drop_post():
                     (post_id)
                 )
                 conn.commit()
-
+        print("удаление поста с айди " + post_id)
         return jsonify({"status": "ok"}), 200
 
     except Exception as e:
